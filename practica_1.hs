@@ -72,7 +72,6 @@ empiezaConM     _     = False
 
 vieneDespues :: DiaDeSemana -> DiaDeSemana -> Bool
 vieneDespues dia1 dia2 = numeroDia dia1 >  numeroDia dia2
-                            
 
 numeroDia :: DiaDeSemana -> Int
 numeroDia Lunes     = 1
@@ -81,17 +80,27 @@ numeroDia Miercoles = 3
 numeroDia Jueves    = 4
 numeroDia Viernes   = 5
 numeroDia Sabado    = 6
-numeroDia Domingo   = 7
+numeroDia Domingo   = 7 
+
+--Opcion sin enumerar dias
+vieneDespues' :: DiaDeSemana -> DiaDeSemana -> Bool
+vieneDespues' _  Domingo   = False
+vieneDespues' Domingo  _   = True
+vieneDespues' _ Sabado     = False
+vieneDespues' Sabado _     = True
+vieneDespues' _ Viernes    = False
+vieneDespues' Viernes _    = True
+vieneDespues' _ Jueves     = False
+vieneDespues' Jueves _     = True
+vieneDespues' _ Miercoles  = False
+vieneDespues' Miercoles _  = True
+vieneDespues' Martes Lunes = True
+vieneDespues' _      _     = False
 
 estaEnElMedio :: DiaDeSemana -> Bool
-estaEnElMedio primerDia = False
-estaEnElMedio ultimoDia = False
-estaEnElMedio     _     = True
-
-estaEnElMedio' :: DiaDeSemana -> Bool
-estaEnElMedio' Lunes   = False
-estaEnElMedio' Domingo = False
-estaEnElMedio'    _    = True
+estaEnElMedio Lunes   = False
+estaEnElMedio Domingo = False
+estaEnElMedio    _    = True
 
 {-3. Los booleanos también son un tipo de enumerativo. Un booleano es True o False. Defina
 las siguientes funciones utilizando pattern matching (no usar las funciones sobre booleanos
@@ -104,6 +113,15 @@ negar True = False
 implica :: Bool -> Bool -> Bool
 implica True False = False
 implica  _     _   = True
+
+yTambien :: Bool -> Bool -> Bool
+yTambien True  True = True
+yTambien False   _  = False
+
+oBien :: Bool -> Bool -> Bool
+oBien False False = False
+oBien   _     _   = True
+
 
 {-4. Registros-}
 
@@ -154,19 +172,41 @@ superaA (Poke Planta _) (Poke Agua _)   = True
 superaA (Poke _ _)      (Poke _ _)      = False                                                   
 
 cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
-cantidadDePokemonDe tp (E _ (Poke tp1 _) (Poke tp2 _)) = if pokemonesIguales tp tp1 && 
-                                                            pokemonesIguales tp tp2
-                                                            then 2
-                                                            else if pokemonesIguales tp tp1 ||
-                                                                    pokemonesIguales tp tp2
-                                                                    then 1
-                                                                    else 0
+cantidadDePokemonDe tp (E _ p1 p2) = unoSi (pokemonEsDeTipo tp p1) + unoSi (pokemonEsDeTipo tp p2)
 
-pokemonesIguales :: TipoDePokemon -> TipoDePokemon -> Bool
-pokemonesIguales Agua   Agua   = True
-pokemonesIguales Fuego  Fuego  = True
-pokemonesIguales Planta Planta = True
-pokemonesIguales   _      _    = False
+
+unoSi :: Bool -> Int
+unoSi True  = 1
+unoSi False = 0
+
+pokemonEsDeTipo :: TipoDePokemon -> Pokemon -> Bool
+pokemonEsDeTipo Agua   (Poke Agua   _) = True
+pokemonEsDeTipo Fuego  (Poke Fuego  _) = True
+pokemonEsDeTipo Planta (Poke Planta _) = True
+pokemonEsDeTipo   _           _        = False
 
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
 juntarPokemon ((E _ e1p1 e1p2), (E _ e2p1 e2p2)) = e1p1 : e1p2 : e2p1 : e2p2 : []
+
+--5. Funciones polimórficas
+
+{-1. Defina las siguientes funciones polimórficas:-}
+
+loMismo :: a -> a
+loMismo a = a
+
+siempreSiete :: a -> Int
+siempreSiete _ = 7
+
+swap :: (a,b) -> (b, a)
+swap (a,b) = (b,a)
+
+{-
+2. Responda la siguiente pregunta: ¾Por qué estas funciones son polimórficas?
+    Ya que no importa de que tipo de dato sea el argumento, siempre va a funcionar
+-}
+
+-- 6. Pattern matching sobre listas
+
+{-1. Defina las siguientes funciones polimórcas utilizando pattern matching sobre listas (no
+utilizar las funciones que ya vienen con Haskell):-}
