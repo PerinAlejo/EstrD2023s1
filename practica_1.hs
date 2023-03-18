@@ -210,3 +210,16 @@ swap (a,b) = (b,a)
 
 {-1. Defina las siguientes funciones polimórcas utilizando pattern matching sobre listas (no
 utilizar las funciones que ya vienen con Haskell):-}
+
+estaVacia :: [a] -> Bool
+estaVacia [] = True
+estaVacia _  = False
+
+elPrimero :: [a] -> a
+elPrimero (a :_) = a
+
+sinElPrimero :: [a] -> [a]
+sinElPrimero (_ : xs) = xs
+
+splitHead :: [a] -> (a, [a])
+splitHead (a : xs) = (a, xs)
