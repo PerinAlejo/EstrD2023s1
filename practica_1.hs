@@ -116,8 +116,8 @@ implica  _     _   = True
 
 yTambien :: Bool -> Bool -> Bool
 yTambien True  True = True
-yTambien False   _  = False
-
+yTambien  _     _   = False
+ 
 oBien :: Bool -> Bool -> Bool
 oBien False False = False
 oBien   _     _   = True
@@ -186,8 +186,10 @@ pokemonEsDeTipo Planta (Poke Planta _) = True
 pokemonEsDeTipo   _           _        = False
 
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
-juntarPokemon ((E _ e1p1 e1p2), (E _ e2p1 e2p2)) = e1p1 : e1p2 : e2p1 : e2p2 : []
+juntarPokemon (e1, e2) = pokemonesDeEntrenador e1 ++ pokemonesDeEntrenador e2 
 
+pokemonesDeEntrenador :: Entrenador -> [Pokemon]
+pokemonesDeEntrenador (E _ p1 p2) = p1 : p2 :  []
 --5. Funciones polimórficas
 
 {-1. Defina las siguientes funciones polimórficas:-}
