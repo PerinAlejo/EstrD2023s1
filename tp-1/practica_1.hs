@@ -169,7 +169,7 @@ superaA :: Pokemon -> Pokemon -> Bool
 superaA (Poke Agua _)   (Poke Fuego _)  = True
 superaA (Poke Fuego _)  (Poke Planta _) = True
 superaA (Poke Planta _) (Poke Agua _)   = True
-superaA (Poke _ _)      (Poke _ _)      = False                                                   
+superaA       _              _          = False                                                   
 
 cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
 cantidadDePokemonDe tp (E _ p1 p2) = unoSi (pokemonEsDeTipo tp p1) + unoSi (pokemonEsDeTipo tp p2)
