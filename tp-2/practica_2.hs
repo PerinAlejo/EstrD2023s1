@@ -50,3 +50,31 @@ lasDeLongitudMayorA n (x:xs) = if longitud x > n
                                   then x : lasDeLongitudMayorA n xs
                                   else lasDeLongitudMayorA n xs
 
+agregarAlFinal :: [a] -> a -> [a]
+agregarAlFinal   []   y = y : []
+agregarAlFinal (x:xs) y = x : agregarAlFinal xs y
+
+agregar :: [a] -> [a] -> [a]
+agregar   []     []   = []
+agregar (x:xs)   l2   = x : agregar xs l2
+agregar   l1   (y:ys) = y : agregar l1 ys
+
+reversa :: [a] ->  [a]
+reversa   []   = []
+reversa (x:xs) = agregarAlFinal (reversa xs) x
+
+zipMaximos :: [Int] -> [Int] -> [Int]
+zipMaximos   []     []   = [] 
+zipMaximos   []   (y:ys) = y : zipMaximos [] ys
+zipMaximos (x:xs)   []   = x : zipMaximos xs []
+zipMaximos (x:xs) (y:ys) = maxDelPar (x,y) : zipMaximos xs ys
+
+maxDelPar :: (Int,Int) -> Int
+maxDelPar (n, m) = if (n > m)
+                       then n
+                       else m
+
+elMinimo :: Ord a => [a] -> a
+elMinimo   []   = error "La lista está vacía"
+elMinimo   [x]  = x
+elMinimo (x:xs) = min x (elMinimo xs)
