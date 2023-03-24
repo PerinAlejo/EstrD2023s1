@@ -115,12 +115,12 @@ implica True False = False
 implica  _     _   = True
 
 yTambien :: Bool -> Bool -> Bool
-yTambien True  True = True
-yTambien  _     _   = False
+yTambien True  b = b
+yTambien  _    _ = False
  
 oBien :: Bool -> Bool -> Bool
-oBien False False = False
-oBien   _     _   = True
+oBien False b = False
+oBien   _   _ = True
 
 
 {-4. Registros-}
