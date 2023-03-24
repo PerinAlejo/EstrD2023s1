@@ -78,3 +78,28 @@ elMinimo :: Ord a => [a] -> a
 elMinimo   []   = error "La lista está vacía"
 elMinimo   [x]  = x
 elMinimo (x:xs) = min x (elMinimo xs)
+
+--2. Recursión sobre números
+
+factorial :: Int -> Int --Precondicion: n debe ser un numero natural
+factorial 0 = 1
+factorial n = n * factorial (n-1)
+
+cuentaRegresiva :: Int -> [Int] --Precondicion: n debe ser un numero natural
+cuentaRegresiva 0 = []
+cuentaRegresiva n = n : cuentaRegresiva (n-1)
+
+repetir :: Int -> a -> [a]
+repetir 0 e = [] 
+repetir n e = e : repetir (n-1) e
+
+losPrimeros :: Int -> [a] -> [a]
+losPrimeros 0   _    = []
+losPrimeros _   []   = []
+losPrimeros n (x:xs) = x : losPrimeros (n-1) xs 
+
+sinLosPrimeros :: Int -> [a] -> [a]
+sinLosPrimeros 0   xs   = xs
+sinLosPrimeros _   []   = [] 
+sinLosPrimeros n (_:xs) = sinLosPrimeros (n-1) xs
+
