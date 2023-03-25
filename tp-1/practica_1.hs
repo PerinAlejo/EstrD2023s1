@@ -165,11 +165,19 @@ data TipoDePokemon = Agua | Fuego | Planta
 data Entrenador = E String Pokemon Pokemon -- Nombre Pokemon_1 Pokemon_2
                 deriving Show
 
+
 superaA :: Pokemon -> Pokemon -> Bool
-superaA (Poke Agua _)   (Poke Fuego _)  = True
-superaA (Poke Fuego _)  (Poke Planta _) = True
-superaA (Poke Planta _) (Poke Agua _)   = True
-superaA       _              _          = False                                                   
+superaA p1 p2 = esMejorTipo (tipoDePokemon p1) (tipoDePokemon p2)
+
+tipoDePokemon :: Pokemon -> TipoDePokemon
+tipoDePokemon (Poke tp _) = tp
+
+esMejorTipo :: TipoDePokemon -> TipoDePokemon -> Bool
+esMejorTipo Agua   Fuego  = True
+esMejorTipo Fuego  Planta = True
+esMejorTipo Planta Agua   = True
+esMejorTipo  _      _     = False
+
 
 cantidadDePokemonDe :: TipoDePokemon -> Entrenador -> Int
 cantidadDePokemonDe tp (E _ p1 p2) = unoSi (pokemonEsDeTipo tp p1) + unoSi (pokemonEsDeTipo tp p2)
