@@ -188,10 +188,13 @@ unoSi True  = 1
 unoSi False = 0
 
 pokemonEsDeTipo :: TipoDePokemon -> Pokemon -> Bool
-pokemonEsDeTipo Agua   (Poke Agua   _) = True
-pokemonEsDeTipo Fuego  (Poke Fuego  _) = True
-pokemonEsDeTipo Planta (Poke Planta _) = True
-pokemonEsDeTipo   _           _        = False
+pokemonEsDeTipo tp p1 = esMismoTipo tp (tipoDePokemon p1)
+
+esMismoTipo :: TipoDePokemon -> TipoDePokemon -> Bool
+esMismoTipo Agua   Agua   = True
+esMismoTipo Fuego  Fuego  = True
+esMismoTipo Planta Planta = True
+esMismoTipo   _      _    = False
 
 juntarPokemon :: (Entrenador, Entrenador) -> [Pokemon]
 juntarPokemon (e1, e2) = pokemonesDeEntrenador e1 ++ pokemonesDeEntrenador e2 
