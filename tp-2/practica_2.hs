@@ -153,8 +153,49 @@ data TipoDePokemon = Agua | Fuego | Planta
 
 data Entrenador = E String  [Pokemon] -- Nombre Pokemones
                 deriving Show
+------------------------------------------------------------------------------------
 
 cantPokemon :: Entrenador -> Int
 cantPokemon (E _ ps) = longitud ps
+
+------------------------------------------------------------------------------------
+
+cantPokemonDe :: TipoDePokemon -> Entrenador -> Int
+cantPokemonDe tp e = cantPokemonEn tp (pokemonesDe e)  
+
+pokemonesDe :: Entrenador -> [Pokemon]
+pokemonesDe (E _ ps) = ps
+
+cantPokemonEn :: TipoDePokemon -> [Pokemon] -> Int
+cantPokemonEn tp   []   = 0
+cantPokemonEn tp (p:ps) = unoSi (pokemonEsDeTipo tp p) + cantPokemonEn tp ps
+
+pokemonEsDeTipo :: TipoDePokemon -> Pokemon -> Bool
+pokemonEsDeTipo tp p1 = esMismoTipo tp (tipoDePokemon p1)
+
+esMismoTipo :: TipoDePokemon -> TipoDePokemon -> Bool
+esMismoTipo Agua   Agua   = True
+esMismoTipo Fuego  Fuego  = True
+esMismoTipo Planta Planta = True
+esMismoTipo   _      _    = False
+
+tipoDePokemon :: Pokemon -> TipoDePokemon
+tipoDePokemon (Poke tp _) = tp
+
+------------------------------------------------------------------------------------
+
+cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int
+cuantosDeTipo_De_LeGananATodosLosDe_ tp e1 e2 = 
+
+------------------------------------------------------------------------------------
+
+esMaestroPokemon :: Entrenador -> Bool
+esMaestroPokemon e = existePokeDeTipo (pokemonesDe e) Agua   &&
+                     existePokeDeTipo (pokemonesDe e) Fuego  &&
+                     existePokeDeTipo (pokemonesDe e) Planta 
+
+existePokeDeTipo :: [Pokemon] -> TipoDePokemon -> Bool
+existePokeDeTipo   []   tp = False
+existePokeDeTipo (p:ps) tp = pokemonEsDeTipo tp p || existePokeDeTipo ps tp                     
 
 
