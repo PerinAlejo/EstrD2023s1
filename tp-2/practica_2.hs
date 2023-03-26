@@ -184,8 +184,8 @@ tipoDePokemon (Poke tp _) = tp
 
 ------------------------------------------------------------------------------------
 
-cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int
-cuantosDeTipo_De_LeGananATodosLosDe_ tp e1 e2 = 
+-- cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int
+-- cuantosDeTipo_De_LeGananATodosLosDe_ tp e1 e2 = 
 
 ------------------------------------------------------------------------------------
 
@@ -198,4 +198,40 @@ existePokeDeTipo :: [Pokemon] -> TipoDePokemon -> Bool
 existePokeDeTipo   []   tp = False
 existePokeDeTipo (p:ps) tp = pokemonEsDeTipo tp p || existePokeDeTipo ps tp                     
 
+{-3. El tipo de dato Rol representa los roles (desarollo o management) de empleados IT dentro
+de una empresa de software, junto al proyecto en el que se encuentran. Así, una empresa es
+una lista de personas con diferente rol. La definición es la siguiente:
+-}
 
+data Seniority = Junior | SemiSenior | Senior
+                 deriving Show
+
+data Proyecto = Pro String
+                deriving Show
+
+data Rol = Developer Seniority Proyecto | Management Seniority Proyecto
+           deriving Show
+
+data Empresa = Emp [Rol]
+               deriving Show
+
+------------------------------------------------------------------------------------
+-- (Emp [Developer Senior (Pro "Pagina Web"),Management Junior (Pro "Servicio"), Developer SemiSenior (Pro "DataBase")])
+
+proyectos :: Empresa -> [Proyecto]
+proyectos (Emp rs) = proyectosEnLista rs
+
+proyectosEnLista :: [Rol] -> [Proyecto]
+proyectosEnLista   []   = []
+proyectosEnLista (r:rs) = proyecto r : proyectosEnLista rs
+
+proyecto :: Rol -> Proyecto
+proyecto (Developer _ pd)  = pd
+proyecto (Management _ pm) = pm
+
+rolesDeEmpresa :: Empresa -> [Rol]
+rolesDeEmpresa (Emp r) = r
+
+------------------------------------------------------------------------------------
+
+losDevSenior :: Empresa -> [Proyecto] -> Int
