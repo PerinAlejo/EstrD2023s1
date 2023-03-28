@@ -1,12 +1,12 @@
 --1. Recursión sobre listas
 
 sumatoria :: [Int] -> Int
-sumatoria   []   = 0
+--sumatoria   []   = 0
 sumatoria (x:xs) = x + sumatoria xs
 
 longitud :: [a] -> Int
 longitud   []   = 0
-longitud (x:xs) = 1 + longitud xs
+longitud (_:xs) = 1 + longitud xs
 
 sucesores :: [Int] -> [Int]
 sucesores   []   = []
@@ -183,9 +183,28 @@ tipoDePokemon :: Pokemon -> TipoDePokemon
 tipoDePokemon (Poke tp _) = tp
 
 ------------------------------------------------------------------------------------
+-- cuantosDeTipo_De_LeGananATodosLosDe_ Fuego (E "Ash" [(Poke Fuego 54), (Poke Fuego 54), (Poke Planta 54)]) (E "Brook" [(Poke Planta 54), (Poke Planta 54), (Poke Planta 54)]) 
 
--- cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int
--- cuantosDeTipo_De_LeGananATodosLosDe_ tp e1 e2 = 
+cuantosDeTipo_De_LeGananATodosLosDe_ :: TipoDePokemon -> Entrenador -> Entrenador -> Int 
+cuantosDeTipo_De_LeGananATodosLosDe_ tp e1 e2 = cuantosDeTipo_En_LeGananATodosEn_ tp (pokemonesDe e1) (pokemonesDe e2)
+
+cuantosDeTipo_En_LeGananATodosEn_ :: TipoDePokemon -> [Pokemon] -> [Pokemon] -> Int
+cuantosDeTipo_En_LeGananATodosEn_ _     []    _   = 0
+cuantosDeTipo_En_LeGananATodosEn_ tp (p1:ps1) ps2 = 
+    unoSi(pokemonEsDeTipo tp p1 && leGanaATodosLosDe p1 ps2) + cuantosDeTipo_En_LeGananATodosEn_ tp ps1 ps2
+
+leGanaATodosLosDe :: Pokemon -> [Pokemon] -> Bool
+leGanaATodosLosDe p1    []    = True
+leGanaATodosLosDe p1 (p2:ps2) = superaA p1 p2 && leGanaATodosLosDe p1 ps2
+
+superaA :: Pokemon -> Pokemon -> Bool
+superaA p1 p2 = esMejorTipo (tipoDePokemon p1) (tipoDePokemon p2)
+
+esMejorTipo :: TipoDePokemon -> TipoDePokemon -> Bool
+esMejorTipo Agua   Fuego  = True
+esMejorTipo Fuego  Planta = True
+esMejorTipo Planta Agua   = True
+esMejorTipo  _      _     = False
 
 ------------------------------------------------------------------------------------
 
@@ -233,5 +252,40 @@ rolesDeEmpresa :: Empresa -> [Rol]
 rolesDeEmpresa (Emp r) = r
 
 ------------------------------------------------------------------------------------
+--losDevSenior (Emp [Developer Senior (Pro "Pagina Web"), Developer Junior (Pro "Servicio"), Developer Senior (Pro "DataBase")]) [(Pro "Pagina Web"),(Pro "DataBase")]
 
 losDevSenior :: Empresa -> [Proyecto] -> Int
+losDevSenior (Emp rs) ps = losDevSeniorEnRoles rs ps
+
+losDevSeniorEnRoles :: [Rol] -> [Proyecto] -> Int
+losDevSeniorEnRoles   []   _  = 0
+losDevSeniorEnRoles (r:rs) ps = unoSi(esDevSenior r && proyectoDe_PerteneceA r ps) + losDevSeniorEnRoles rs ps
+
+esDevSenior :: Rol -> Bool
+esDevSenior  (Developer s _ ) = esSenior s
+esDevSenior         _         = False
+
+esSenior :: Seniority -> Bool
+esSenior Senior = True
+esSenior   _    = False
+
+proyectoDe_PerteneceA :: Rol -> [Proyecto] -> Bool
+proyectoDe_PerteneceA (Developer  _  p) ps = estaProyectoEnLista p ps   
+proyectoDe_PerteneceA (Management _  p) ps = estaProyectoEnLista p ps
+
+estaProyectoEnLista :: Proyecto -> [Proyecto] -> Bool
+estaProyectoEnLista p1    []    = False
+estaProyectoEnLista p1 (p2:ps2) = nombreProyecto p1 == nombreProyecto p2 || estaProyectoEnLista p1 ps2
+
+nombreProyecto :: Proyecto -> String
+nombreProyecto (Pro s) = s
+
+------------------------------------------------------------------------------------
+--cantQueTrabajanEn [(Pro "Pagina Web")] (Emp [Developer Senior (Pro "Pagina Web"), Management Junior (Pro "Servicio"), Developer Senior (Pro "DataBase")]) 
+
+cantQueTrabajanEn :: [Proyecto] -> Empresa -> Int
+cantQueTrabajanEn ps (Emp rs) = cantDeRolesQueTrabajanEn ps rs
+
+cantDeRolesQueTrabajanEn :: [Proyecto] -> [Rol] -> Int
+cantDeRolesQueTrabajanEn _    []   = 0
+cantDeRolesQueTrabajanEn ps (r:rs) = unoSi(proyectoDe_PerteneceA r ps)  + cantDeRolesQueTrabajanEn ps rs
