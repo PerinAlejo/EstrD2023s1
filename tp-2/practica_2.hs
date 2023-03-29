@@ -248,9 +248,6 @@ proyecto :: Rol -> Proyecto
 proyecto (Developer _ pd)  = pd
 proyecto (Management _ pm) = pm
 
-rolesDeEmpresa :: Empresa -> [Rol]
-rolesDeEmpresa (Emp r) = r
-
 ------------------------------------------------------------------------------------
 --losDevSenior (Emp [Developer Senior (Pro "Pagina Web"), Developer Junior (Pro "Servicio"), Developer Senior (Pro "DataBase")]) [(Pro "Pagina Web"),(Pro "DataBase")]
 
@@ -289,3 +286,27 @@ cantQueTrabajanEn ps (Emp rs) = cantDeRolesQueTrabajanEn ps rs
 cantDeRolesQueTrabajanEn :: [Proyecto] -> [Rol] -> Int
 cantDeRolesQueTrabajanEn _    []   = 0
 cantDeRolesQueTrabajanEn ps (r:rs) = unoSi(proyectoDe_PerteneceA r ps)  + cantDeRolesQueTrabajanEn ps rs
+
+------------------------------------------------------------------------------------
+
+--asignadosPorProyecto (Emp [Developer Senior (Pro "Pagina Web"), Management Junior (Pro "Pagina Web"), Developer Senior (Pro "Servicio"), Developer Senior (Pro "Servicio"), Developer Senior (Pro "Servicio"), Developer Senior (Pro "lola")])
+
+asignadosPorProyecto :: Empresa -> [(Proyecto, Int)]
+asignadosPorProyecto (Emp rs) = rolesAsignadosPorProyecto rs
+
+rolesAsignadosPorProyecto :: [Rol] -> [(Proyecto, Int)]
+rolesAsignadosPorProyecto   []   = []
+rolesAsignadosPorProyecto (r:rs) = (proyecto r, cuantosDe_TrabajanEnProyecto (r:rs) r) : rolesAsignadosPorProyecto (rolesSinProyectosDe rs r)
+
+cuantosDe_TrabajanEnProyecto :: [Rol] -> Rol -> Int
+cuantosDe_TrabajanEnProyecto    []    _  = 0
+cuantosDe_TrabajanEnProyecto (r1:r1s) r2 = 
+     unoSi(nombreProyecto (proyecto r1) == nombreProyecto (proyecto r2)) + cuantosDe_TrabajanEnProyecto r1s r2
+
+rolesSinProyectosDe :: [Rol] -> Rol ->[Rol]
+rolesSinProyectosDe   []     _  = []
+rolesSinProyectosDe (r1:r1s) r2 = singularSi r1 (nombreProyecto (proyecto r1) /= nombreProyecto (proyecto r2)) ++ rolesSinProyectosDe r1s r2
+
+singularSi :: a -> Bool -> [a]
+singularSi a True = [a]
+singularSi a  _   = [] 
