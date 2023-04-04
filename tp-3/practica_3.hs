@@ -94,7 +94,7 @@ cantTesorosEntre n1 n2     Fin      = 0
 cantTesorosEntre n1 n2   (Nada c)   = cantTesorosEntre n1 n2 c
 cantTesorosEntre n1 n2 (Cofre os c) = cantTesorosEntre n1 n2 c
 
-
+------------------------------------------------------------------------------------
 
 
 
@@ -187,4 +187,19 @@ consACada x (xs:xss) = (x:xs) : consACada x xss
 
 
 t1 = (NodeT 1 (NodeT 2(NodeT 3(EmptyT)(NodeT 4 (EmptyT)(EmptyT)))(EmptyT)) (NodeT 3(NodeT 4(EmptyT)(EmptyT)) EmptyT))
+
+------------------------------------------------------------------------------------
+--2.2. Expresiones Aritméticas
+
+data ExpA = Valor Int
+          | Sum ExpA ExpA
+          | Prod ExpA ExpA
+          | Neg ExpA
+        deriving Show
+
+eval :: ExpA -> Int
+eval (Valor n)    = n 
+eval (Sum e1 e2)  = (eval e1) + (eval e2)
+eval (Prod e1 e2) = (eval e1) * (eval e2)
+eval (Neg e1)     = -(eval e1)
 
