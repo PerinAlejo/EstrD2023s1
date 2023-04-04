@@ -38,6 +38,7 @@ ponerN 0 _  ce = ce
 ponerN n co ce = (Bolita co (ponerN (n-1) co ce))  
 
 ------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
 --1.2. Camino hacia el tesoro
 
 data Objeto = Cacharro | Tesoro
@@ -90,15 +91,18 @@ cantidadDeTesoros (Cofre os c) = unoSi(tieneTesoro os) + cantidadDeTesoros c
 
 ------------------------------------------------------------------------------------
 cantTesorosEntre :: Int -> Int -> Camino -> Int
-cantTesorosEntre n1 n2     Fin      = 0
-cantTesorosEntre n1 n2   (Nada c)   = cantTesorosEntre n1 n2 c
-cantTesorosEntre n1 n2 (Cofre os c) = cantTesorosEntre n1 n2 c
+cantTesorosEntre 0  0  c = unoSi (hayTesoroEnLugarActual  c)
+cantTesorosEntre 0  n2 c = unoSi  (hayTesoroEnLugarActual c) + cantTesorosEntre 0 (n2-1) (caminoDelCamino c)                                                       
+cantTesorosEntre n1 n2 c = cantTesorosEntre (n1-1) (n2-1) (caminoDelCamino c)
+
+caminoDelCamino :: Camino -> Camino
+caminoDelCamino     Fin     = Fin
+caminoDelCamino   (Nada c)  = c
+caminoDelCamino (Cofre _ c) = c
+ 
 
 ------------------------------------------------------------------------------------
-
-
-
-
+------------------------------------------------------------------------------------
 --2. Tipos arbóreos
 --2.1. Árboles binarios
 
@@ -189,6 +193,7 @@ consACada x (xs:xss) = (x:xs) : consACada x xss
 t1 = (NodeT 1 (NodeT 2(NodeT 3(EmptyT)(NodeT 4 (EmptyT)(EmptyT)))(EmptyT)) (NodeT 3(NodeT 4(EmptyT)(EmptyT)) EmptyT))
 
 ------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------
 --2.2. Expresiones Aritméticas
 
 data ExpA = Valor Int
@@ -203,3 +208,29 @@ eval (Sum e1 e2)  = (eval e1) + (eval e2)
 eval (Prod e1 e2) = (eval e1) * (eval e2)
 eval (Neg e1)     = -(eval e1)
 
+{-
+a) 0 + x = x + 0 = x
+b) 0 * x = x * 0 = 0
+c) 1 * x = x * 1 = x
+d) - (- x) = x
+-}
+
+simplificar :: ExpA -> ExpA
+simplificar (Sum  x y) = (simplificarSuma x y)
+simplificar (Prod x y) = (simplificarProd x y)
+simplificar (Neg  x)   = (simplificarNeg x)
+
+simplificarSuma :: Int -> Int -> ExpA
+simplificarSuma 0 x = (Valor x)
+simplificarSuma x 0 = (Valor x)
+simplificarSuma x y = (Sum (Valor x) (Valor y))
+
+simplificarProd :: Int -> Int -> ExpA
+simplificarProd 1 x = (Valor x)
+simplificarProd x 1 = (Valor x)
+simplificarProd x y = (Prod (Valor x) (Valor y))
+
+simplificarNeg :: Int -> ExpA
+simplificarNeg x = if x < 0
+                   then (Valor x)
+                   else (Neg (Valor x))
