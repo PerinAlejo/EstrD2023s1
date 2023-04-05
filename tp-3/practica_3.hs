@@ -91,15 +91,22 @@ cantidadDeTesoros (Cofre os c) = unoSi(tieneTesoro os) + cantidadDeTesoros c
 
 ------------------------------------------------------------------------------------
 cantTesorosEntre :: Int -> Int -> Camino -> Int
-cantTesorosEntre 0  0  c = unoSi (hayTesoroEnLugarActual  c)
-cantTesorosEntre 0  n2 c = unoSi  (hayTesoroEnLugarActual c) + cantTesorosEntre 0 (n2-1) (caminoDelCamino c)                                                       
+cantTesorosEntre 0  0  c = cantidadDeTesorosEnLugarActual c
+cantTesorosEntre 0  n2 c = cantidadDeTesorosEnLugarActual c + cantTesorosEntre 0 (n2-1) (caminoDelCamino c)                                                       
 cantTesorosEntre n1 n2 c = cantTesorosEntre (n1-1) (n2-1) (caminoDelCamino c)
 
 caminoDelCamino :: Camino -> Camino
 caminoDelCamino     Fin     = Fin
 caminoDelCamino   (Nada c)  = c
 caminoDelCamino (Cofre _ c) = c
- 
+
+cantidadDeTesorosEnLugarActual :: Camino -> Int
+cantidadDeTesorosEnLugarActual (Cofre os _) = cantidadDeTesorosEn  os
+cantidadDeTesorosEnLugarActual      _       = 0
+
+cantidadDeTesorosEn :: [Objeto] -> Int
+cantidadDeTesorosEn   []   = 0
+cantidadDeTesorosEn (o:os) = unoSi(esTesoro o) + cantidadDeTesorosEn os 
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
@@ -208,29 +215,24 @@ eval (Sum e1 e2)  = (eval e1) + (eval e2)
 eval (Prod e1 e2) = (eval e1) * (eval e2)
 eval (Neg e1)     = -(eval e1)
 
-{-
-a) 0 + x = x + 0 = x
-b) 0 * x = x * 0 = 0
-c) 1 * x = x * 1 = x
-d) - (- x) = x
--}
-
+------------------------------------------------------------------------------------
 simplificar :: ExpA -> ExpA
-simplificar (Sum  x y) = (simplificarSuma x y)
-simplificar (Prod x y) = (simplificarProd x y)
-simplificar (Neg  x)   = (simplificarNeg x)
+simplificar (Sum  x y) = (simplificarSuma (simplificar x) (simplificar y))
+simplificar (Prod x y) = (simplificarProd (simplificar x) (simplificar y))
+simplificar (Neg  x)   = (simplificarNeg (simplificar x))
+simplificar exp        = exp
 
-simplificarSuma :: Int -> Int -> ExpA
-simplificarSuma 0 x = (Valor x)
-simplificarSuma x 0 = (Valor x)
-simplificarSuma x y = (Sum (Valor x) (Valor y))
+simplificarSuma :: ExpA -> ExpA -> ExpA
+simplificarSuma (Valor 0)      x     = x
+simplificarSuma     x      (Valor 0) = x
+simplificarSuma     x          y     = (Sum x y)
 
-simplificarProd :: Int -> Int -> ExpA
-simplificarProd 1 x = (Valor x)
-simplificarProd x 1 = (Valor x)
-simplificarProd x y = (Prod (Valor x) (Valor y))
+simplificarProd :: ExpA -> ExpA -> ExpA
+simplificarProd (Valor 1)     x     = x
+simplificarProd     x     (Valor 1) = x
+simplificarProd     x         y     = (Prod x y)
 
-simplificarNeg :: Int -> ExpA
-simplificarNeg x = if x < 0
-                   then (Valor x)
-                   else (Neg (Valor x))
+simplificarNeg :: ExpA -> ExpA
+simplificarNeg (Neg x) = x
+simplificarNeg    x    = (Neg x)
+
