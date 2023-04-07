@@ -84,9 +84,10 @@ factorial :: Int -> Int --Precondicion: n debe ser un numero natural
 factorial 0 = 1
 factorial n = n * factorial (n-1)
 
-cuentaRegresiva :: Int -> [Int] --Precondicion: n debe ser un numero natural
-cuentaRegresiva 0 = []
-cuentaRegresiva n = n : cuentaRegresiva (n-1)
+cuentaRegresiva :: Int -> [Int] 
+cuentaRegresiva n = if n > 0
+                    then n : cuentaRegresiva (n-1)
+                    else []
 
 repetir :: Int -> a -> [a]
 repetir 0 e = [] 
