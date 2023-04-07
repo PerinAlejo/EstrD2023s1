@@ -64,9 +64,8 @@ reversa   []   = []
 reversa (x:xs) = agregarAlFinal (reversa xs) x
 
 zipMaximos :: [Int] -> [Int] -> [Int]
-zipMaximos   []     []   = [] 
-zipMaximos   []   (y:ys) = y : zipMaximos [] ys
-zipMaximos (x:xs)   []   = x : zipMaximos xs []
+zipMaximos   []     ys   = ys
+zipMaximos   xs     []   = xs
 zipMaximos (x:xs) (y:ys) = maxDelPar (x,y) : zipMaximos xs ys
 
 maxDelPar :: (Int,Int) -> Int
