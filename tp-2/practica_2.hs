@@ -242,7 +242,13 @@ proyectos (Emp rs) = proyectosEnLista rs
 
 proyectosEnLista :: [Rol] -> [Proyecto]
 proyectosEnLista   []   = []
-proyectosEnLista (r:rs) = proyecto r : proyectosEnLista rs
+proyectosEnLista (r:rs) = agregarSiNoEsta (proyecto r)  (proyectosEnLista rs)
+
+agregarSiNoEsta :: Proyecto -> [Proyecto] -> [Proyecto] 
+agregarSiNoEsta pr   []   = pr:[]
+agregarSiNoEsta pr (p:ps) = if nombreProyecto pr == nombreProyecto p
+                              then p : ps
+                              else p : (agregarSiNoEsta pr ps)
 
 proyecto :: Rol -> Proyecto
 proyecto (Developer _ pd)  = pd
