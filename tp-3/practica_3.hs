@@ -35,7 +35,7 @@ sacar co (Bolita cc ce) = if esElMismoColor co cc
 ------------------------------------------------------------------------------------
 ponerN :: Int -> Color -> Celda -> Celda
 ponerN 0 _  ce = ce 
-ponerN n co ce = (Bolita co (ponerN (n-1) co ce))  
+ponerN n co ce = poner co (ponerN (n-1) co ce)
 
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
@@ -82,13 +82,13 @@ hayTesoroEnLugarActual      _       = False
 
 ------------------------------------------------------------------------------------
 alMenosNTesoros :: Int -> Camino -> Bool
-alMenosNTesoros n c = cantidadDeTesoros c >= n
+alMenosNTesoros 0      _       = True
+alMenosNTesoros n     Fin      = False
+alMenosNTesoros n   (Nada c)   = alMenosNTesoros n c
+alMenosNTesoros n (Cofre os c) = cantidadDeTesorosEn os > n || alMenosNTesoros (n - cantidadDeTesorosEn os) c
+                                 
 
-cantidadDeTesoros :: Camino -> Int
-cantidadDeTesoros     Fin      = 0
-cantidadDeTesoros   (Nada c)   = cantidadDeTesoros c
-cantidadDeTesoros (Cofre os c) = unoSi(tieneTesoro os) + cantidadDeTesoros c
-
+c1 = Nada (Cofre [Tesoro] (Cofre [Tesoro,Tesoro] Fin))
 ------------------------------------------------------------------------------------
 cantTesorosEntre :: Int -> Int -> Camino -> Int
 cantTesorosEntre 0  0  c = cantidadDeTesorosEnLugarActual c
@@ -118,59 +118,65 @@ data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
 
 ------------------------------------------------------------------------------------
 sumarT :: Tree Int -> Int
-sumarT       EmptyT        = 0 
-sumarT (NodeT n (a1) (a2)) = n + sumarT a1 + sumarT a2
+sumarT       EmptyT    = 0 
+sumarT (NodeT n a1 a2) = n + sumarT a1 + sumarT a2
 
 ------------------------------------------------------------------------------------
 sizeT :: Tree a -> Int
-sizeT        EmptyT       = 0
-sizeT (NodeT n (a1) (a2)) = 1 + sizeT a1 + sizeT a2 
+sizeT        EmptyT   = 0
+sizeT (NodeT n a1 a2) = 1 + sizeT a1 + sizeT a2 
 
 ------------------------------------------------------------------------------------
 mapDobleT :: Tree Int -> Tree Int
-mapDobleT       EmptyT        = EmptyT
-mapDobleT (NodeT n (a1) (a2)) = (NodeT (n*2) (mapDobleT a1) (mapDobleT a2))
+mapDobleT       EmptyT    = EmptyT
+mapDobleT (NodeT n a1 a2) = (NodeT (n*2) (mapDobleT a1) (mapDobleT a2))
 
 ------------------------------------------------------------------------------------
 perteneceT :: Eq a => a -> Tree a -> Bool
-perteneceT x       EmptyT        = False
-perteneceT x (NodeT xa (a1) (a2)) = x == xa || perteneceT x a1 || perteneceT x a2
+perteneceT x       EmptyT     = False
+perteneceT x (NodeT xa a1 a2) = x == xa || perteneceT x a1 || perteneceT x a2
 
 ------------------------------------------------------------------------------------
 aparicionesT :: Eq a => a -> Tree a -> Int
-aparicionesT x       EmptyT         = 0
-aparicionesT x (NodeT xa (a1) (a2)) = unoSi(x==xa) + (aparicionesT x a1) + (aparicionesT x a2)
+aparicionesT x       EmptyT     = 0
+aparicionesT x (NodeT xa a1 a2) = unoSi(x==xa) + (aparicionesT x a1) + (aparicionesT x a2)
 
 ------------------------------------------------------------------------------------
+
 leaves :: Tree a -> [a]
 leaves       EmptyT        = []
-leaves (NodeT e (a1) (a2)) = e : leaves a1 ++ leaves a2  
+leaves   (NodeT e a1 a2)   = if esEmptyT a1 && esEmptyT a2
+                                 then [e]
+                                 else leaves (a1) ++ leaves (a2) 
 
+esEmptyT :: Tree a -> Bool
+esEmptyT EmptyT = True
+esEmptyT   _    = False
 ------------------------------------------------------------------------------------
 heightT :: Tree a -> Int
-heightT       EmptyT        = 0
-heightT (NodeT e (a1) (a2)) = 1 + max (heightT a1) (heightT a2)
+heightT       EmptyT    = 0
+heightT (NodeT e a1 a2) = 1 + max (heightT a1) (heightT a2)
 
 ------------------------------------------------------------------------------------
 mirrorT :: Tree a -> Tree a
-mirrorT       EmptyT        = EmptyT
-mirrorT (NodeT e (a1) (a2)) = (NodeT e (mirrorT a2) (mirrorT a1))
+mirrorT       EmptyT    = EmptyT
+mirrorT (NodeT e a1 a2) = (NodeT e (mirrorT a2) (mirrorT a1))
 
 ------------------------------------------------------------------------------------
 toList :: Tree a -> [a]
-toList        EmptyT       = []
-toList (NodeT e (a1) (a2)) = toList a1 ++ [e] ++ toList a2
+toList        EmptyT   = []
+toList (NodeT e a1 a2) = toList a1 ++ [e] ++ toList a2
 
 ------------------------------------------------------------------------------------
 levelN :: Int -> Tree a -> [a]
-levelN _        EmptyT       = []
-levelN 0 (NodeT e (a1) (a2)) = e : []
-levelN n (NodeT e (a1) (a2)) = levelN (n-1) a1 ++ levelN (n-1) a2
+levelN _      EmptyT     = []
+levelN 0 (NodeT e a1 a2) = e : []
+levelN n (NodeT e a1 a2) = levelN (n-1) a1 ++ levelN (n-1) a2
 
 ------------------------------------------------------------------------------------
 listPerLevel :: Tree a -> [[a]]
-listPerLevel       EmptyT       = []
-listPerLevel (NodeT e (a1) (a2)) = [e] : juntarNiveles (listPerLevel a1) (listPerLevel a2)
+listPerLevel       EmptyT    = []
+listPerLevel (NodeT e a1 a2) = [e] : juntarNiveles (listPerLevel a1) (listPerLevel a2)
 
 juntarNiveles :: [[a]] -> [[a]] -> [[a]]
 juntarNiveles    []       yss   = yss
@@ -179,8 +185,8 @@ juntarNiveles (xs:xss) (ys:yss) = (xs ++ ys) : juntarNiveles xss yss
 
 ------------------------------------------------------------------------------------
 ramaMasLarga :: Tree a -> [a]
-ramaMasLarga       EmptyT       = []
-ramaMasLarga (NodeT e (a1) (a2)) = e : laMasLarga (ramaMasLarga a1) (ramaMasLarga a2)
+ramaMasLarga       EmptyT    = []
+ramaMasLarga (NodeT e a1 a2) = e : laMasLarga (ramaMasLarga a1) (ramaMasLarga a2)
 
 laMasLarga :: [a] -> [a] -> [a]
 laMasLarga xs ys = if (length ys) > (length xs)             
@@ -189,8 +195,8 @@ laMasLarga xs ys = if (length ys) > (length xs)
 
 ------------------------------------------------------------------------------------
 todosLosCaminos :: Tree a -> [[a]]
-todosLosCaminos       EmptyT        = []
-todosLosCaminos (NodeT e (a1) (a2)) = [e] : consACada e (todosLosCaminos a1) ++ consACada e (todosLosCaminos a2)
+todosLosCaminos       EmptyT    = []
+todosLosCaminos (NodeT e a1 a2) = [e] : consACada e (todosLosCaminos a1) ++ consACada e (todosLosCaminos a2)
 
 consACada :: a -> [[a]] -> [[a]]
 consACada x    []    = []
@@ -229,10 +235,11 @@ simplificarSuma     x          y     = (Sum x y)
 
 simplificarProd :: ExpA -> ExpA -> ExpA
 simplificarProd (Valor 1)     x     = x
+simplificarProd (Valor 0)     x     = (Valor 0)
 simplificarProd     x     (Valor 1) = x
+simplificarProd     x     (Valor 0) = (Valor 0)
 simplificarProd     x         y     = (Prod x y)
 
 simplificarNeg :: ExpA -> ExpA
 simplificarNeg (Neg x) = x
 simplificarNeg    x    = (Neg x)
-
