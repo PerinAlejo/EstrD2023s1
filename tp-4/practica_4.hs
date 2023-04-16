@@ -178,10 +178,117 @@ data Tree a = EmptyT | NodeT a (Tree a) (Tree a)
 data Nave = N (Tree Sector)
           deriving Show
 
+n = (N (NodeT s1 (NodeT s2 EmptyT (NodeT s4 EmptyT EmptyT)) (NodeT s3 EmptyT EmptyT)))
+
+s1 = (S "Comander" [(Motor 24), (Almacen [Comida, Comida, Oxigeno, Combustible])] ["Tripulante 1","Tripulante 2","Tripulante 3"])
+s2 = (S "Torpedero" [LanzaTorpedos, (Motor 100), (Almacen [Torpedo,Torpedo,Torpedo,Torpedo])] ["Tripulante 1","Tripulante 4"])
+s3 = (S "Porter" [(Motor 24), (Almacen [Comida, Comida, Oxigeno, Combustible])] ["Tripulante 1","Tripulante 2","Tripulante 5","Tripulante 6"])
+s4 = (S "Cocina" [(Motor 24), (Almacen [Comida, Comida, Oxigeno, Combustible])] ["Tripulante 1","Tripulante 7"])
 ------------------------------------------------------------------------------------
-sectores :: Nave -> [SectorId] 
+sectores :: Nave -> [SectorId]
+sectores (N ts) = sectoresT ts
 
+sectoresT :: Tree Sector -> [SectorId]
+sectoresT      EmptyT     = []
+sectoresT (NodeT s t1 t2) = idSector  s : sectoresT t1 ++ sectoresT t2
 
+idSector  :: Sector -> SectorId
+idSector  (S id _ _) = id
+
+------------------------------------------------------------------------------------
+poderDePropulsion :: Nave -> Int
+poderDePropulsion (N ts) = propulsionT ts
+
+propulsionT :: Tree Sector -> Int
+propulsionT      EmptyT     = 0
+propulsionT (NodeT s t1 t2) = propulsionDeS s + propulsionT t1 + propulsionT t2
+
+propulsionDeS:: Sector -> Int
+propulsionDeS (S _ cs _) = propulsionDeCs cs
+
+propulsionDeCs :: [Componente] -> Int
+propulsionDeCs   []   = 0
+propulsionDeCs (c:cs) = nivelDePropSiEsMotor c + propulsionDeCs cs
+
+nivelDePropSiEsMotor :: Componente -> Int 
+nivelDePropSiEsMotor (Motor p) = p
+nivelDePropSiEsMotor     _      = 0
+
+------------------------------------------------------------------------------------
+barriles :: Nave -> [Barril]
+barriles (N ts) = barrilesT ts
+
+barrilesT :: Tree Sector -> [Barril]
+barrilesT      EmptyT     = []
+barrilesT (NodeT s t1 t2) = barrilesS s ++ barrilesT t1 ++ barrilesT t2
+
+barrilesS :: Sector -> [Barril]
+barrilesS (S _ cs _) = barrilesCs cs
+
+barrilesCs :: [Componente] -> [Barril]
+barrilesCs   []   = []
+barrilesCs (c:cs) = barrilesC c ++ barrilesCs cs
+
+barrilesC :: Componente -> [Barril]
+barrilesC (Almacen bs) = bs
+barrilesC      _       = []
+
+------------------------------------------------------------------------------------
+agregarASector :: [Componente] -> SectorId -> Nave -> Nave
+agregarASector cs id (N ts) = (N (agregarASectorT cs id ts))
+
+agregarASectorT :: [Componente] -> SectorId -> Tree Sector -> Tree Sector
+agregarASectorT cs id      EmptyT     = EmptyT
+agregarASectorT cs id (NodeT s t1 t2) = if id == idSector s
+                                        then (NodeT (agregarComponentes cs s) t1 t2)
+                                        else (NodeT s (agregarASectorT cs id t1) (agregarASectorT cs id t2))
+
+agregarComponentes :: [Componente] -> Sector -> Sector
+agregarComponentes cs (S id css ts) = (S id (css ++ cs) ts)
+
+------------------------------------------------------------------------------------
+asignarTripulanteA :: Tripulante -> [SectorId] -> Nave -> Nave --Precondición: Todos los id de la lista existen en la nave.
+asignarTripulanteA t ids (N ts) = (N (sectorTConTripulante t ids ts))
+
+sectorTConTripulante  :: Tripulante -> [SectorId] -> Tree Sector -> Tree Sector
+sectorTConTripulante t ids     EmptyT      = EmptyT
+sectorTConTripulante t ids (NodeT s t1 t2) = if pertenece (idSector s) ids
+                                             then (NodeT (sectorConTripulante t s) (sectorTConTripulante t ids t1) (sectorTConTripulante t ids t2)) 
+                                             else (NodeT s (sectorTConTripulante t ids t1) (sectorTConTripulante t ids t2))
+
+sectorConTripulante :: Tripulante -> Sector -> Sector
+sectorConTripulante t (S id cs ts) = (S id cs (t:ts))
+
+pertenece :: Eq a => a -> [a] -> Bool
+pertenece e   []   = False
+pertenece e (x:xs) = e == x || pertenece e xs
+
+------------------------------------------------------------------------------------
+sectoresAsignados :: Tripulante -> Nave -> [SectorId]
+sectoresAsignados t (N ts) = sectoresAsignadosT t ts
+
+sectoresAsignadosT :: Tripulante -> Tree Sector -> [SectorId]
+sectoresAsignadosT t      EmptyT     = []
+sectoresAsignadosT t (NodeT s t1 t2) = if pertenece t (tripulantesS s)
+                                       then idSector s : sectoresAsignadosT t t1 ++ sectoresAsignadosT t t2
+                                       else []
+
+tripulantesS :: Sector -> [Tripulante]
+tripulantesS (S _ _ ts) = ts
+
+------------------------------------------------------------------------------------
+tripulantes :: Nave -> [Tripulante]
+tripulantes (N ts) = tripulantesT ts
+
+tripulantesT :: Tree Sector -> [Tripulante]
+tripulantesT      EmptyT     = []
+tripulantesT (NodeT s t1 t2) = agregarTripulantesS (tripulantesS s) (agregarTripulantesS (tripulantesT t1) (tripulantesT t2))
+
+agregarTripulantesS :: [Tripulante] -> [Tripulante] -> [Tripulante]
+agregarTripulantesS    []    ts2 = ts2     
+agregarTripulantesS (t1:ts1) ts2 = if pertenece t1 ts2
+                                   then agregarTripulantesS ts1 ts2
+                                   else t1 : agregarTripulantesS ts1 ts2   
 ------------------------------------------------------------------------------------
 ------------------------------------------------------------------------------------
 --4. Manada de lobos
