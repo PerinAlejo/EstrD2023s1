@@ -299,10 +299,51 @@ type Nombre = String -- nombre de lobo
 data Lobo   = Cazador Nombre [Presa] Lobo Lobo Lobo
             | Explorador Nombre [Territorio] Lobo Lobo
             | Cria Nombre
+            deriving Show
 data Manada = M Lobo
+            deriving Show
 
-cria = (Cria "Jose")
-l1 = (Cazador "Juan" ["Conejo", "Conejo"] cria cria (Cazador "Alfa" ["Conejo", "Conejo", "Conejo"] cria cria cria))
+m = (M l1)
+cria = (Cria "Pichon")
+l1 = (Cazador "Guerrero" ["Conejo", "Conejo"] 
+               (Explorador "Pichon" ["Llanura", "Selva"]
+                    cria
+                    cria) 
+               (Cazador "Alfa" ["Conejo", "Conejo"]
+                    cria
+                    (Explorador "Poo" ["Llanura", "Bosque"]
+                         cria
+                         cria)
+                    cria )
+               (Explorador "Willy" ["Llanura", "Bosque","Jungla"] 
+                    cria 
+                    (Cazador "Lobin" ["Conejo", "Conejo"]
+                         cria 
+                         cria
+                         cria)))
+
+------------------------------------------------------------------------------------
+buenaCaza :: Manada -> Bool
+buenaCaza m = cantidadDeAlimento m > cantidadDeCrias m
+
+cantidadDeAlimento :: Manada -> Int
+cantidadDeAlimento (M l) = cantidadDeAlimentoL l
+
+cantidadDeAlimentoL :: Lobo -> Int
+cantidadDeAlimentoL       (Cria _)          = 0
+cantidadDeAlimentoL (Explorador _ _ l1 l2)  = cantidadDeAlimentoL l1 + cantidadDeAlimentoL l2
+cantidadDeAlimentoL (Cazador _ ps l1 l2 l3) = alimentoEn ps + cantidadDeAlimentoL l1 + cantidadDeAlimentoL l2 + cantidadDeAlimentoL l3
+
+alimentoEn :: [Presa] -> Int
+alimentoEn ps = length ps
+
+cantidadDeCrias :: Manada -> Int
+cantidadDeCrias (M l) = cantidadDeCriasL l 
+
+cantidadDeCriasL :: Lobo -> Int
+cantidadDeCriasL       (Cria _)          = 1
+cantidadDeCriasL (Explorador _ _ l1 l2)  = cantidadDeCriasL l1 + cantidadDeCriasL l2
+cantidadDeCriasL (Cazador _ ps l1 l2 l3) = cantidadDeCriasL l1 + cantidadDeCriasL l2 + cantidadDeCriasL l3
 
 ------------------------------------------------------------------------------------
 elAlfa :: Manada -> (Nombre, Int)
@@ -338,9 +379,54 @@ esCazador (Cazador _ _ _ _ _) = True
 esCazador          _          = False
 
 ------------------------------------------------------------------------------------
+losQueExploraron :: Territorio -> Manada -> [Nombre]
+losQueExploraron t (M l) = losQueExploraronL t l
+
+losQueExploraronL :: Territorio -> Lobo -> [Nombre]
+losQueExploraronL t        (Cria _)         = []
+losQueExploraronL t (Explorador n ts l1 l2) = if pertenece t ts
+                                              then n : losQueExploraronL t l1 ++ losQueExploraronL t l2
+                                              else losQueExploraronL t l1 ++ losQueExploraronL t l2
+losQueExploraronL t (Cazador _ _ l1 l2 l3)  = losQueExploraronL t l1 ++ losQueExploraronL t l2 ++ losQueExploraronL t l3
+
+------------------------------------------------------------------------------------
+exploradoresPorTerritorio :: Manada -> [(Territorio, [Nombre])]
+exploradoresPorTerritorio (M l) = asignarNombresATerritorios l (sinTerritoriosRepetidos (territoriosDeExploradores l))
+
+asignarNombresATerritorios :: Lobo -> [Territorio] ->[(Territorio, [Nombre])]
+asignarNombresATerritorios l   []   = []
+asignarNombresATerritorios l (t:ts) = (t, exploradoresDelTerritorio t l) : asignarNombresATerritorios l ts 
+                                       
+
+territoriosDeExploradores :: Lobo -> [Territorio]
+territoriosDeExploradores        (Cria _)         = []
+territoriosDeExploradores (Explorador n ts l1 l2) =  ts ++ territoriosDeExploradores l1 ++ territoriosDeExploradores l2
+territoriosDeExploradores (Cazador _ _ l1 l2 l3)  =  territoriosDeExploradores l1 ++ territoriosDeExploradores l2 ++ territoriosDeExploradores l3
+
+exploradoresDelTerritorio :: Territorio -> Lobo -> [Nombre]
+exploradoresDelTerritorio t        (Cria _)         = []
+exploradoresDelTerritorio t (Explorador n ts l1 l2) = singularSi n (pertenece t ts) ++ exploradoresDelTerritorio t l1 ++ exploradoresDelTerritorio t l2
+exploradoresDelTerritorio t (Cazador _ _ l1 l2 l3)  = exploradoresDelTerritorio t l1 ++ exploradoresDelTerritorio t l2 ++ exploradoresDelTerritorio t l3
+
+sinTerritoriosRepetidos :: [Territorio] -> [Territorio]
+sinTerritoriosRepetidos   []   = []
+sinTerritoriosRepetidos (t:ts) = if elem t (sinTerritoriosRepetidos ts)
+                                 then sinTerritoriosRepetidos ts
+                                 else t : sinTerritoriosRepetidos ts
+
+
+t1 = [("Bosque",["Pichon"]),("Selva",["Pichon"]),("Llanura",["Pichon"])] 
+t2 = [("Bosque",["Juan","Jose"]),("Selva",["Jose"])]
+
+------------------------------------------------------------------------------------
 -- let nombre = expresion in codigo
--- superioresDelCazador :: Nombre -> Manada -> [Nombre]
--- superioresDelCazador n (M l) = nombresDe (soloCazadores(todosLosSuperiores n l))
+
+superioresDelCazador :: Nombre -> Manada -> [Nombre]
+superioresDelCazador n (M l) = nombresDeCazadores(todosLosSuperiores n l)
+
+nombresDeCazadores :: [Lobo] -> [Nombre]
+nombresDeCazadores   []   = []
+nombresDeCazadores (l:ls) = singularSi (nombreLobo l) (esCazador l) ++ nombresDeCazadores ls
 
 todosLosSuperiores :: Nombre -> Lobo -> [Lobo]
 todosLosSuperiores n        (Cria nl)         = [(Cria nl)]
@@ -354,6 +440,15 @@ todosLosSuperiores n (Cazador nl ps l1 l2 l3) = if nombreLobo l1 == n || nombreL
                                                 then [(Cazador nl ps l1 l2 l3)]
                                                 else if not (null(todosLosSuperiores n l1++todosLosSuperiores n l2++todosLosSuperiores n l3))
                                                      then (Cazador nl ps l1 l2 l3) : (todosLosSuperiores n l1 ++ todosLosSuperiores n l2 ++todosLosSuperiores n l3)
-                                                     else []    
+                                                     else []
 
-                                                
+
+superioresDelCazador :: Nombre -> Manada -> [Nombre]
+superioresDelCazador n (M l) = todosLosSuperiores n l 
+
+todosLosSuperiores :: Nombre -> Lobo -> [Nombre]
+todosLosSuperiores n        (Cria nl)         = 
+todosLosSuperiores n (Explorador nl ts l1 l2) = 
+todosLosSuperiores n (Cazador nl ps l1 l2 l3) = if nombreLobo l1 == n || nombreLobo l2 == n || nombreLobo l3 == n
+                                                then [(Cazador nl ps l1 l2 l3)]
+                                                else 
