@@ -1,4 +1,5 @@
 import SetV1
+import Stack
 --1. Cálculo de costos
 
 
@@ -119,3 +120,28 @@ treeSet = NodeT set1 (NodeT set2 EmptyT EmptyT) (NodeT set3 EmptyT EmptyT)
 
 -- ======================================================================================
 -- ====================================================================================== 
+--3. Queue (cola)
+
+
+
+-- ======================================================================================
+-- ======================================================================================    
+--4. Stack (pila)
+
+apilar :: [a] -> Stack a
+apilar   []   = emptySt
+apilar (x:xs) = push x (apilar xs)
+
+desapilar :: Stack a  -> [a]
+desapilar s = if isEmptySt s
+                then []
+                else top s : (desapilar (pop s))
+
+insertarEnPos :: Int -> a -> Stack a -> Stack a
+insertarEnPos 0 e s = push e s
+insertarEnPos n e s = if lenSt s < n
+                        then error "Posicion no valida"
+                        else insertarEnPos (n-1) e (pop s) 
+        
+    
+
