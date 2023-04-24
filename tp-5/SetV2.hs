@@ -1,37 +1,46 @@
 module SetV2
-    (Set,sizeS,setToList,emptyS,belongs,addS,removeS,unionS )
+    (Set,sizeS,setToList,emptyS,belongs,addS,removeS,unionS)
 where
 
-data Set a = S [a] Int
-{-
-INV. REP:
-    -Para S l c:
-        c es la cantidad de elementos en l 
--}
+data Set a = S [a] 
 
-sizeS :: Eq a => Set a -> Int                    --Constante
-sizeS (S _ c) = c
+s1= S [1,1,2,2,3,3,4,4,5,5,6,6,7,7]
+
+sizeS :: Eq a => Set a -> Int                    --Lineal
+sizeS s = length(setToList s)
 
 setToList :: Eq a => Set a -> [a]                --Lineal
-setToList (S l _) = sinRepetidos l
+setToList (S l) = sinRepetidos l
 
-sinRepetidos :: Eq a => [a] -> [a]  --Lineal + Constante = Lineal
+sinRepetidos :: Eq a => [a] -> [a]               --Lineal + Constante = Lineal
 sinRepetidos [] = []
 sinRepetidos (x:xs) =
-    if pertenece x xs              --Lineal
+    if elem x xs              --Lineal
         then sinRepetidos xs       --Constante
         else x : sinRepetidos xs   --Constante
 
 emptyS :: Set a                                  --Constante
-emptyS = (S [] 0)
+emptyS = (S [])
 
 belongs :: Eq a => a -> Set a -> Bool            --Lineal
-belongs e (S l _) = elem e l 
+belongs e (S l) = elem e l 
 
 addS :: Eq a => a -> Set a -> Set a              --Constante
-addS e (S l c) = (S (e:l) c)
+addS e (S l) = (S (e:l))
             
 removeS :: Eq a => a -> Set a -> Set a           --Lineal
-removeS e s = if belongs e s 
-                then (S (quitar e (setToList s)) (sizeS s - 1))
-                else s
+removeS e (S l) = if elem e l
+                then (S (quitarTodos e l))
+                else (S l)
+
+quitarTodos :: Eq a => a -> [a] -> [a]           --Lineal
+quitarTodos e   []   = []
+quitarTodos e (x:xs) = if e == x
+                    then quitarTodos e xs
+                    else x : quitarTodos e xs
+
+unionS :: Eq a => Set a -> Set a -> Set a        --Lineal   
+unionS s1 s2 = (S ((listaS s1) ++ (listaS s2))) 
+
+listaS :: Set a -> [a]                           --Constante
+listaS (S l) = l

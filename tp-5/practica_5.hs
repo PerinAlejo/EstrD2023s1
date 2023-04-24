@@ -1,5 +1,6 @@
-import SetV1
+import SetV2
 import Stack
+import QueueV1
 --1. Cálculo de costos
 
 
@@ -122,6 +123,13 @@ treeSet = NodeT set1 (NodeT set2 EmptyT EmptyT) (NodeT set3 EmptyT EmptyT)
 -- ====================================================================================== 
 --3. Queue (cola)
 
+lengthQ :: Queue a -> Int
+lengthQ q = length (queueToList q)
+
+queueToList :: Queue a -> [a]
+queueToList q = if isEmptyQ q
+                then []
+                else (firstQ q) : queueToList (dequeue q)
 
 
 -- ======================================================================================

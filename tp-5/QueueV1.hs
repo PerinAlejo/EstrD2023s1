@@ -1,5 +1,5 @@
 module QueueV1 
-    (Queue, )
+    (Queue,emptyQ,isEmptyQ,enqueue,firstQ,dequeue)
 where
 
 data Queue a = Q [a]
@@ -33,3 +33,4 @@ dequeue :: Queue a -> Queue a               --Constante
 dequeue q = if isEmptyQ q
             then emptyQ
             else (Q (tail(listaQ q)))
+
