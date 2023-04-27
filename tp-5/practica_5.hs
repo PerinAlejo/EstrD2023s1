@@ -1,6 +1,6 @@
 import SetV2
 import Stack
-import QueueV1
+import QueueV2
 --1. Cálculo de costos
 
 
@@ -131,6 +131,20 @@ queueToList q = if isEmptyQ q
                 then []
                 else (firstQ q) : queueToList (dequeue q)
 
+unionQ :: Queue a -> Queue a -> Queue a
+unionQ q1 q2 = if isEmptyQ q2
+                then q1
+                else enqueue (firstQ q2) (unionQ q1 (dequeue q2))
+
+    
+q1 = enqueue 3 
+     $enqueue 2 
+     $enqueue 1 
+     $emptyQ 
+q2 = enqueue 6 
+     $enqueue 5 
+     $enqueue 4 
+     $emptyQ  
 
 -- ======================================================================================
 -- ======================================================================================    
