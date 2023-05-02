@@ -1,4 +1,20 @@
+import PriorityQueue
 import MapV1
+-- ==================================================================================
+-- ==================================================================================
+
+heapSort :: Ord a => [a] -> [a]
+heapSort l =priorityQueueToList (listToPriorityQueue l)
+
+listToPriorityQueue :: Ord a => [a] -> PriorityQueue a                             
+listToPriorityQueue   []   = emptyPQ
+listToPriorityQueue (x:xs) = insertPQ x (listToPriorityQueue xs)
+
+priorityQueueToList :: Ord a => PriorityQueue a -> [a]
+priorityQueueToList pq = if isEmptyPQ pq 
+                         then []
+                         else findMinPQ pq : priorityQueueToList (deleteMinPQ pq)
+
 -- ==================================================================================
 -- ==================================================================================
 
@@ -65,5 +81,4 @@ incrementar (k:ks) m = assocM k (fromJust(lookupM k m) + 1) (incrementar ks m)
 -----------------------------------------------------------------------------------
 
 --Propósito: dado dos maps se agregan las claves y valores del primer map en el segundo. Si una clave del primero existe en el segundo, es reemplazada por la del primero
-mergeMaps:: Eq k => Map k v -> Map k v -> Map k v
 

@@ -31,12 +31,3 @@ findMinPQ (PQ l) = head l
 deleteMinPQ :: Ord a => PriorityQueue a -> PriorityQueue a      --O(1)
 deleteMinPQ (PQ l) = PQ (tail l)
 
-heapSort :: Ord a => [a] -> [a]
-heapSort xs = listaPQ (priorityQueueDe xs)
-
-priorityQueueDe :: Ord a => [a] -> PriorityQueue a
-priorityQueueDe   []   = emptyPQ
-priorityQueueDe (x:xs) = insertPQ x (priorityQueueDe xs)
-
-listaPQ :: PriorityQueue a -> [a]
-listaPQ (PQ l) = l
