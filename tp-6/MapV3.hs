@@ -21,17 +21,17 @@ emptyM :: Map k v                                          --O(1)
 emptyM = M [] []
 ------------------------------------------------------------------
 --Propósito: agrega una asociación clave-valor al map.
--- assocM :: Eq k => k -> v -> Map k v -> Map k v             --O(n)
--- assocM k v (M ks vs) = assocKv k v ks vs 
+assocM :: Eq k => k -> v -> Map k v -> Map k v             --O(n)
+assocM k v (M ks vs) = assocKv k v ks vs 
                         
--- assocKv :: Eq k => k -> v -> [k] -> [v] -> Map k v
--- assocKv k v ks vs = if elem k ks 
---                     then M ks (reemplazarV v vs (pos k ks))--O(n)
---                     else M (k:ks) (v:vs)
+assocKv :: Eq k => k -> v -> [k] -> [v] -> Map k v
+assocKv k v ks vs = if elem k ks 
+                    then M ks (reemplazarV v vs (pos k ks))--O(n)
+                    else M (k:ks) (v:vs)
 
--- reemplazarV :: v -> [v] -> Int -> [v]                      --O(n)
--- reemplazarV v' (v:vs) 0 = v': vs
--- reemplazarV v' (v:vs) n = v : reemplazarV v' vs (n-1) 
+reemplazarV :: v -> [v] -> Int -> [v]                      --O(n)
+reemplazarV v' (v:vs) 0 = v': vs
+reemplazarV v' (v:vs) n = v : reemplazarV v' vs (n-1) 
 
 --PREC: k es un elemento de la lista
 pos :: Eq k => k -> [k] -> Int                             --O(n)          
@@ -72,12 +72,12 @@ keys (M ks _) = ks
 
 
 
-assocM :: Eq k => k -> v -> Map k v -> Map k v  
-assocM k v (M ks vs) = let (ks', vs') = assocKv k v ks vs in (M ks' vs')
+-- assocM :: Eq k => k -> v -> Map k v -> Map k v  
+-- assocM k v (M ks vs) = let (ks', vs') = assocKv k v ks vs in (M ks' vs')
 
-assocKv :: Eq k => k -> v -> [k] -> [v] -> ([k],[v])
-assocKv k' v'   []     _    = ([k'],[v'])
-assocKv k' v' (k:ks) (v:vs) = if k' == k
-                              then (k:ks, v:vs)
-                              else let (ks',vs') = assocKv k' v' ks vs in 
-                                (k:ks',v:vs') 
+-- assocKv :: Eq k => k -> v -> [k] -> [v] -> ([k],[v])
+-- assocKv k' v'   []     _    = ([k'],[v'])
+-- assocKv k' v' (k:ks) (v:vs) = if k' == k
+--                               then (k:ks, v:vs)
+--                               else let (ks',vs') = assocKv k' v' ks vs in 
+--                                 (k:ks',v:vs') 
