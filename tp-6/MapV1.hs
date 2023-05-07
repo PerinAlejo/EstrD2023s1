@@ -5,6 +5,7 @@ where
 
 
 data Map k v = M [(k, v)]
+        deriving Show
 {-
 INV.REP.: Para m kvs
     -k no debe estar repetida

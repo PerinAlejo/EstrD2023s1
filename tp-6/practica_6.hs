@@ -1,5 +1,6 @@
 import PriorityQueue
 import MapV1
+import MultiSet
 -- ==================================================================================
 -- ==================================================================================
 
@@ -137,5 +138,11 @@ sumarAparicion c ((x,n):xns) = if c == x
                                then (x,n+1) : xns
                                else (x,n) : sumarAparicion c xns
 
+-- ==================================================================================
+-- ==================================================================================
+
+ocurrenciasMS :: String -> MultiSet Char
+ocurrenciasMS   ""   = emptyMS
+ocurrenciasMS (x:xs) = addMS x (ocurrenciasMS xs)
 
 
