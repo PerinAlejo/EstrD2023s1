@@ -90,27 +90,47 @@ fromJust Nothing  = error "No existe el valor"
 fromJust (Just v) = v
 
 ------------------------------------------------------------------
---Propósito: dado un BST y un elemento, devuelve el máximo elemento que sea menor al elemento dado.
--- elMaximoMenorA :: Ord a=> a -> Tree a -> Maybe a
--- elMaximoMenorA x        EmptyT      = Nothing
--- elMaximoMenorA x (NodeT y EmptyT EmptyT) = if x > y 
---                                              then Just y
---                                              else Nothing
--- elMaximoMenorA x (NodeT y ti EmptyT) = if x > y 
---                                       then Just y
---                                       else elMaximoMenorA x ti
--- elMaximoMenorA x   (NodeT y ti td)  = if x > y 
---                                         then if x > root td 
---                                                 then elMaximoMenorA x td 
---                                                 else Just y 
---                                         else elMaximoMenorA x ti
+--Propósito: dado un BST y un elemento, devuelve el máximo elemento que sea menor al elemento dado
+--Costo: Como es O(log n + log n) es igual a O(log n)
+elMaximoMenorA :: Ord a=> a -> Tree a -> Maybe a  
+elMaximoMenorA x      EmptyT     = Nothing
+elMaximoMenorA x (NodeT y ti td) = if x > y && mayorQue (elMinimoBST td) x  --O(log n)  
+                                    then Just y  
+                                    else if x > y 
+                                         then elMaximoMenorA x td  --O(log n)
+                                         else elMaximoMenorA x ti  --O(log n)
 
-elMaximoMenorA :: Ord a=> a -> Tree a -> Maybe a      
-elMaximoMenorA x EmptyT = Nothing
-elMaximoMenorA x   t    = let (y,ty) = splitMaxBST t in
-                          if y < x  
-                            then Just y
-                            else elMaximoMenorA x ty    
+--Costo: O(1)
+mayorQue :: Ord a => Maybe a -> a -> Bool
+mayorQue Nothing _  = True
+mayorQue (Just x) y = x > y
+
+--Costo: O(log n)
+elMinimoBST :: Ord a => Tree a -> Maybe a        
+elMinimoBST       EmptyT       = Nothing
+elMinimoBST (NodeT x EmptyT _) = Just x
+elMinimoBST   (NodeT x ti td)  = elMinimoBST ti
+
+------------------------------------------------------------------
+--Propósito: dado un BST y un elemento, devuelve el mínimo elemento que sea mayor al elemento dado
+--Costo: Como es O(log n + log n) es igual a O(log n) 
+elMinimoMayorA :: Ord a => a -> Tree a -> Maybe a
+elMinimoMayorA x      EmptyT     = Nothing
+elMinimoMayorA x (NodeT y ti td) = if y > x && menorQue (elMaximoBST ti) x  --O(log n)
+                                    then Just y
+                                    else if y > x 
+                                         then elMinimoMayorA x ti  --O(log n)
+                                         else elMinimoMayorA x td  --O(log n)
+--Costo: O(log n)
+elMaximoBST :: Ord a => Tree a -> Maybe a        
+elMaximoBST       EmptyT       = Nothing
+elMaximoBST (NodeT x _ EmptyT) = Just x
+elMaximoBST   (NodeT x ti td)  = elMaximoBST td
+
+--Costo: O(1)
+menorQue :: Ord a => Maybe a -> a -> Bool
+menorQue Nothing _  = True
+menorQue (Just x) y = x < y
 
 ------------------------------------------------------------------
 --Propósito: indica si el árbol está balanceado. Un árbol está balanceado cuando para cada nodo la diferencia de alturas entre el subarbol izquierdo y el derecho es menor o igual a 1.

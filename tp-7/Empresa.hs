@@ -72,12 +72,13 @@ agregarEmpleado ls c (ConsE ms mc) = case (lookupM c mc) of --O(log E)
                                             (ConsE (agregarEmpleadoASec ms newE ls) (assocM c newE mc))
                                             --          O(N log S)                        O(log E)
 
---Costo: si N son los elementos de la lista el costo seria (N log s) ya que por cada elemento dela lista hace una operacion logaritmica, siendo s los                            
+--Costo: si N son los elementos de la lista el costo seria (N log S) ya que por cada elemento de la lista hace una operacion logaritmica
 nuevoEmpleado :: CUIL -> [SectorId] -> Empleado
 nuevoEmpleado c   []   = consEmpleado c  --O(1)
 nuevoEmpleado c (s:ss) = incorporarSector s (nuevoEmpleado c ss)                                  
 
---Costo: suponiendo que addS es O(1) el costo seria  log S + log S *  N, donde N son los elementos de la lista, por lo que el costo seria O(N log S)
+--Costo: suponiendo que addS es O(1) el costo seria  log S + log S *  N, donde N son los elementos de la lista, por lo que el costo seria 
+--O(N log S)
 agregarEmpleadoASec :: Map SectorId (Set Empleado) -> Empleado -> [SectorId] -> Map SectorId (Set Empleado)
 agregarEmpleadoASec ms e   []   = ms
 agregarEmpleadoASec ms e (s:ss) = case (lookupM s ms) of --O(log S)
@@ -87,25 +88,37 @@ agregarEmpleadoASec ms e (s:ss) = case (lookupM s ms) of --O(log S)
 
 -----------------------------------------------------------------------------------
 --Propósito: agrega un sector al empleado con dicho CUIL.
---Costo: calcular
+--Costo: El costo seria O((n * log S + S) + log S + log S)  
 agregarASector :: SectorId -> CUIL -> Empresa -> Empresa
-agregarASector id c (ConsE ms mc) = case (lookupM id mc) of
+agregarASector id c (ConsE ms mc) = case (lookupM c mc) of -- log S 
                                         Nothing -> error "No existe el empleado"
-                                        Just e  -> let newE = incorporarSector id e 
+                                        Just e  -> let newE = incorporarSector id e  -- log S
                                                        secE = sectores newE in
                                             (ConsE (actualizarEmpleado newE secE ms) (assocM c newE mc))
+                                                        -- O(n * log S + S)                  log S    
 
 --Proposito: Retorna un map id con el empleado actualizado en los sectores que ya estaba y con el empleado agregado al nuevo sector.
+--Costo: el costo seria O(n * log S + S) donde n son los elementos de la lista 
 actualizarEmpleado :: Empleado -> [SectorId] -> Map SectorId (Set Empleado) ->Map SectorId (Set Empleado)
-actualizarEmpleado e   []   ms = ms
+actualizarEmpleado e   []   ms = ms --O(1)
 actualizarEmpleado e (s:ss) ms = 
                 assocM s (actualizarSet e fromJust(lookupM s ms)) (actualizarEmpleado e ss ms)
+                --log S         S                       log S               
 
+--Costo: Suponiendo que belongs addS y removeS son lineales el costo de la operacion seria lineal + lineal + lineal
+--por lo que queda O(S) donde S son los SecotoresId del empleado
 actualizarSet :: Empleado -> Set Empleado -> Set Empleado
-actualizarSet e s = if belongs e s
-                    then addS e (removeS e s)
+actualizarSet e s = if belongs e s  -- 
+                    then addS e (removeS e s) -- 
                     else addS e s 
 
+-----------------------------------------------------------------------------------
+--Propósito: elimina al empleado que posee dicho CUIL.
+borrarEmpleado :: CUIL -> Empresa -> Empresa
+borrarEmpleado c (ConsE ms mc) = case (lookupM c mc) of
+                                    Nothing -> error "El empleado no existe" 
+                                    Just e  -> ConsE (borrarEmpleado (sectores e) e ms) (deleteM c mc)
 
-
+--Borrar el empleado de todos los sectores a los que pertenezca
+borrarEmpleado :: [SectoresId] -> Empleado -> Map SectorId (Set Empleado) -> Map SectorId (Set Empleado)
 
