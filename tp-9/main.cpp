@@ -86,7 +86,7 @@ void printN(int n, string s) {
 void printNR(int n, string s) {
     if (n != 0) {
         cout << s << endl;
-        printNR(n-1, s)
+        printNR(n-1, s);
     }
 }
 
@@ -100,9 +100,65 @@ void cuentaRegresiva(int n) {
 void cuentaRegresivaR(int n) {
     if (n != 0) {
         cout << n << endl;
-        cuentaRegresivaR(n-1)
+        cuentaRegresivaR(n-1);
+    } else {
+        cout << 0 << endl;
+    }  
+}
+
+//Propósito: imprime los números de 0 hasta n, separados por saltos de línea.
+void desdeCeroHastaN(int n) {
+    for (int i = 0 ; i <= n ; i++) {
+        cout << i << endl;
     }
-    cout << 0 << endl;
+}
+
+
+//Propósito: realiza la multiplicación entre dos números (sin utilizar la operación * de C++)
+int mult(int n, int m) {
+    int r = 0;
+    for(int i = n ; n > 0 ; n--) {
+        r = r + m;
+    }
+    return r;
+}
+
+int multR(int n, int m) {
+    int r = 0;
+    if (n != 0) {
+        r = multR(n-1, m) + m ;
+    } 
+    return r;
+}
+
+// Propósito: imprime los primeros n char del string s, separados por un salto de línea.
+// Precondición: el string tiene al menos n char.
+void primerosN(int n, string s) {
+    for (int i = 0; i < n ; i++){
+        cout << s[i] << endl;
+    }
+}
+void primerosNR(int n, string s) {
+    if (n > 0) {
+        primerosNR(n-1, s);
+        cout << s[n-1] << endl;
+    }
+}
+
+// Propósito: indica si un char c aparece en el string s.
+bool pertenece(char c, string s){
+    bool r = false;
+    int i  = 0; 
+    while (not r && s[i] != '\0') {     
+        r = (c == s[i]);
+        i++ ;
+    }
+    return r ;
+}
+
+bool perteneceR(char c, string s){
+    int i = 0; 
+    return c == s[i] || perteneceR 
 }
 
 
@@ -111,5 +167,6 @@ void cuentaRegresivaR(int n) {
 // ====================================================================================================
 
 int main() {
-    printN(5,"SOL");
+    bool b = pertenece('p', "alejo");
+    cout << b << endl;
 }
