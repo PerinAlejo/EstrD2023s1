@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Par.h"
+#include "Fraccion.h"
 using namespace std;
 
 // ====================================================================================================
@@ -113,6 +114,14 @@ void desdeCeroHastaN(int n) {
     }
 }
 
+void desdeCeroHastaNR(int n) {
+    if (n < 0) {
+        return;
+    }
+    desdeCeroHastaN(n - 1);
+    cout << n << endl;
+}
+
 
 //Propósito: realiza la multiplicación entre dos números (sin utilizar la operación * de C++)
 int mult(int n, int m) {
@@ -156,9 +165,33 @@ bool pertenece(char c, string s){
     return r ;
 }
 
-bool perteneceR(char c, string s){
-    int i = 0; 
-    return c == s[i] || perteneceR 
+bool perteneceR(char c, string s) {
+    if (s.empty()) {
+        return false;
+    }
+    if (s[0] == c) {
+        return true;
+    }
+    return pertenece(c, s.substr(1));
+}
+
+//Propósito: devuelve la cantidad de apariciones de un char c en el string s.
+int apariciones(char c, string s) {
+    int count = 0;
+    for (int i=0; s[i] != '\0'; i++) {
+        if (c==s[i]){
+            count++;
+        }
+    }
+    return count;
+}
+
+int aparicionesR(char c, string s) { 
+    if(s.empty()) {
+        return 0;
+    }
+    int count = (s[0] == c) ? 1 : 0;
+    return count + apariciones(c, s.substr(1));
 }
 
 
@@ -167,6 +200,7 @@ bool perteneceR(char c, string s){
 // ====================================================================================================
 
 int main() {
-    bool b = pertenece('p', "alejo");
-    cout << b << endl;
+   Fraccion f = simplificada(consFraccion(10,20));
+   cout << "Numerador: " << numerador(f) << endl;
+   cout << "Denominador: " << denominador(f) << endl;
 }
