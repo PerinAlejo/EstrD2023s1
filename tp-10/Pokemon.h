@@ -2,11 +2,13 @@ struct PokeSt;
 
 typedef PokeSt* Pokemon; 
 
+typedef string TipoDePokemon;
+
 //Dado un tipo devuelve un pokémon con 100 % de energía.
 Pokemon consPokemon(TipoDePokemon tipo);
 
 //Devuelve el tipo de un pokémon.
-tipo tipoDePokemon(Pokemon p);
+TipoDePokemon tipoDePokemon(Pokemon p);
 
 //Devuelve el porcentaje de energía
 int energia(Pokemon p);

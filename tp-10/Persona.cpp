@@ -3,7 +3,7 @@
 struct PersonaSt {
     string nombre;
     int edad;
-}
+};
 
 Persona consPersona(string nombre, int edad) {
     PersonaSt* p = new PersonaSt;

@@ -5,13 +5,13 @@ struct EntrenadorSt {
     string nombre;
     Pokemon* pokemon;
     int cantPokemon;
-}
+};
 
 Entrenador conEntrenador(string nombre, int cantidad, Pokemon* pokemon) {
         EntrenadorSt* e = new EntrenadorSt;
         e->nombre = nombre;
         e->cantPokemon = cantidad;
-        e->pokemon = pokemon[cantidad];
+        e->pokemon = pokemon;
         return e;
 }
 
@@ -20,10 +20,10 @@ string nombreDeEntrenador(Entrenador e){
 }
 
 int cantidadDePokemonDe(TipoDePokemon tipo, Entrenador e){
-    int count = 0
-    for (int i = 0; i < e->cantPokemon; i++){
-        int p = e->pokemon[i];
-        count = count + (p->tipo == tipo) ? 1 : 0;
+    int count = 0;
+    for (int i = 1; i <= e->cantPokemon; i++){
+        Pokemon p = e->pokemon[i];
+        count = count + (tipoDePokemon(p) == tipo) ? 1 : 0;
     }
     return count;
 }
@@ -35,8 +35,8 @@ Pokemon pokemonNumero(Entrenador e, int n) {
 
 bool leGanaATodos(Entrenador e1, Entrenador e2){
     bool leGanaATodos = false; 
-    while(not leGanaATodos && i <= e1->cantPokemon) {
-        int i = 1;
+    int i = 1;
+    while(not leGanaATodos && i <= e1->cantPokemon) {     
         leGanaATodos = pokemonLeGanaATodos(pokemonNumero(e1, i++), e2);
     }
     return leGanaATodos;
@@ -44,8 +44,8 @@ bool leGanaATodos(Entrenador e1, Entrenador e2){
 
 bool pokemonLeGanaATodos(Pokemon p, Entrenador e){
     bool PokeLeGanaATodos = true;
-    while (PokeLeGanaATodos && i <= e->cantPokemon) {
-        int i = 1;
+    int i = 1;
+    while (PokeLeGanaATodos && i <= e->cantPokemon) {        
         PokeLeGanaATodos = superaA(p, pokemonNumero(e, i++));
     }
     return PokeLeGanaATodos;
