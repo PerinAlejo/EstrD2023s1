@@ -1,4 +1,6 @@
 #include "Pokemon.h"
+#include <iostream>
+using namespace std;
 
 typedef string TipoDePokemon;
 
@@ -31,7 +33,15 @@ void perderEnergia(int energia, Pokemon p) {
 }
 
 bool superaA(Pokemon p1, Pokemon p2) {
-         
+         if (p1->tipo == "agua") {
+            (p2->tipo == "fuego") ? return 1 : return 0;
+         }
+         if (p1->tipo == "fuego") {
+            (p2->tipo == "planta") ? return 1 : return 0;
+         }
+         if (p1->tipo == "planta") {
+            (p2->tipo == "agua") ? return 1 : return 0;
+         }
 }
 
 

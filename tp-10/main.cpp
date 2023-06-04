@@ -1,5 +1,5 @@
-#include <iostrem> 
-using namescape std;
+#include <iostream>
+using namespace std;
 
 /*
     .h   -> Interfaz
@@ -11,10 +11,3 @@ main.cpp -> Codigo que usan nuestros tipos
 */
 
 
-arrayList newArrayList() {
-    arrayListSt* array = new arrayListSt; 
-    array->cantida = 0;
-    array->capacidad = 16;
-    array->elemento = new int[16];
-    return array;
-}
