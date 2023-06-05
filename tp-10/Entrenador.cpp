@@ -33,14 +33,6 @@ Pokemon pokemonNumero(Entrenador e, int n) {
     return e->pokemon[n-1];
 }
 
-bool leGanaATodos(Entrenador e1, Entrenador e2){
-    bool leGanaATodos = false; 
-    int i = 1;
-    while(not leGanaATodos && i <= e1->cantPokemon) {     
-        leGanaATodos = pokemonLeGanaATodos(pokemonNumero(e1, i++), e2);
-    }
-    return leGanaATodos;
-}
 
 bool pokemonLeGanaATodos(Pokemon p, Entrenador e){
     bool PokeLeGanaATodos = true;
@@ -50,4 +42,15 @@ bool pokemonLeGanaATodos(Pokemon p, Entrenador e){
     }
     return PokeLeGanaATodos;
 }
+
+bool leGanaATodos(Entrenador e1, Entrenador e2){
+    bool leGanaATodos = false; 
+    int i = 1;
+    while(not leGanaATodos && i <= e1->cantPokemon) {     
+        leGanaATodos = pokemonLeGanaATodos(pokemonNumero(e1, i++), e2);
+    }
+    return leGanaATodos;
+}
+
+
 

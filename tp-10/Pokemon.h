@@ -1,3 +1,6 @@
+#include <iostream>
+using namespace std;
+
 struct PokeSt;
 
 typedef PokeSt* Pokemon; 

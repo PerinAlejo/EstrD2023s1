@@ -38,6 +38,18 @@ void resize(int capacidad, ArrayList xs) {
     
 }
 
+void add(int x, ArrayList xs){
+    if (xs->cantidad == xs->capacidad) {
+        
+    }
+}
+
+void remove(ArrayList xs) {
+
+}
+
+
+
 
 
 

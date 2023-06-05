@@ -2,12 +2,11 @@
 #include <iostream>
 using namespace std;
 
-
-
 struct PokeSt {
     TipoDePokemon tipo;
     int energia;
 } ;
+
 
 Pokemon consPokemon(TipoDePokemon tipo){
     PokeSt* p = new PokeSt;
@@ -35,13 +34,13 @@ void perderEnergia(int energia, Pokemon p) {
 bool superaA(Pokemon p1, Pokemon p2) {
          bool resultado; 
          if (p1->tipo == "agua") {
-            (p2->tipo == "fuego") ? true : false;
+            resultado = (p2->tipo == "fuego") ? true : false;
          }
          if (p1->tipo == "fuego") {
-            (p2->tipo == "planta") ? true : false;
+            resultado = (p2->tipo == "planta") ? true : false;
          }
          if (p1->tipo == "planta") {
-            (p2->tipo == "agua") ? true : false;
+            resultado = (p2->tipo == "agua") ? true : false;
          }
          return resultado;
 }
