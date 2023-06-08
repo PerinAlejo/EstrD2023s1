@@ -1,4 +1,4 @@
-#include "LinkedList.cpp"
+#include "LinkedList.h"
 
 struct NodoL {
     int elem; // valor del nodo
@@ -7,7 +7,7 @@ struct NodoL {
 
 struct LinkedListSt {
 // INV.REP.: cantidad indica la cantidad de nodos que se pueden recorrer
-// desde primero por siguiente hasta alcanzar a NULL
+// desde primero por siguiente hasta alcanzar a nullptr
     int cantidad; // cantidad de elementos
     NodoL* primero; // puntero al primer nodo
 };
@@ -21,7 +21,7 @@ struct IteratorSt {
 LinkedList nil() {
     LinkedListSt* xs = new LinkedListSt;
     xs->cantidad = 0;
-    xs->primero = NULL;
+    xs->primero = nullptr;
     return xs;
 }
 
@@ -51,8 +51,8 @@ void Cons(int x, LinkedList xs){
 //Quita el primer elemento.
 //Prec: La lista no es vacia.
 void Tail(LinkedList xs) {
-    NodeL* temp = xs->primero; 
-    xs->primero = xs->primero->siguiente
+    NodoL* temp = xs->primero; 
+    xs->primero = xs->primero->siguiente;
     delete temp;
     xs->cantidad--;
 }
@@ -65,14 +65,14 @@ int length(LinkedList xs) {
 //Agrega un elemento al final de la lista.
 //Eficiencia: O(n) donde n son los elementos de la lista
 void Snoc(int x, LinkedList xs) {
-    NodeL* node = new NodeL;
+    NodoL* node = new NodoL;
     node->elem = x;
-    node->siguiente = NULL;
-    if (xs->primero == NULL) {
+    node->siguiente = nullptr;
+    if (xs->primero == nullptr) {
         xs->primero = node;
     } else {
-        NodeL* temp = xs->primero;
-        while (temp->siguiente != NULL) {
+        NodoL* temp = xs->primero;
+        while (temp->siguiente != nullptr) {
             temp = temp->siguiente;
         }
         temp->siguiente = node;
@@ -105,7 +105,7 @@ void Next(ListIterator ixs){
 
 //Indica si el recorrido ha terminado.
 bool atEnd(ListIterator ixs) {
-    return (ixs->current->siguiente == NULL)
+    return (ixs->current == nullptr);
 }
 
 //Libera la memoria ocupada por el iterador.
@@ -116,12 +116,12 @@ void DisposeIterator(ListIterator ixs){
 //Libera la memoria ocupada por la lista. Crea y borra espacios de memoria tantas veces como elementos 
 //a borrar.
 void DestroyL(LinkedList xs) {    
-    if(xs->primero == NULL) {
+    if(xs->primero == nullptr) {
         delete xs;
     } else {
-        NodeT* tempSiguiente = xs->primero;
-        while (tempSiguiente->siguiente != NULL) {
-            NodeT* tempABorrar = tempSiguiente;
+        NodoL* tempSiguiente = xs->primero;
+        while (tempSiguiente->siguiente != nullptr) {
+            NodoL* tempABorrar = tempSiguiente;
             tempSiguiente = tempABorrar->siguiente;
             delete tempABorrar;
         }
@@ -130,9 +130,10 @@ void DestroyL(LinkedList xs) {
     }
 }
 
+/*
 //Libera la memoria ocupada por la lista. Utiliza Iterador
 void DestroyLConIterador(LinkedList xs) {
-    if(xs->primero == NULL) {
+    if(xs->primero == nullptrptr) {
         delete xs;
     } else {
         ListIterator tempABorrar = getIterator(xs);
@@ -148,5 +149,5 @@ void DestroyLConIterador(LinkedList xs) {
         delete xs;
     }   
 }
-
+*/
 
