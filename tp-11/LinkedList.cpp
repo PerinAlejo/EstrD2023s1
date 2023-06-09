@@ -7,9 +7,11 @@ struct NodoL {
 
 struct LinkedListSt {
 // INV.REP.: cantidad indica la cantidad de nodos que se pueden recorrer
+//           si primero es null ultimo tambien y viseversa. 
 // desde primero por siguiente hasta alcanzar a nullptr
     int cantidad; // cantidad de elementos
     NodoL* primero; // puntero al primer nodo
+    NodoL* ultimo;
 };
 
 struct IteratorSt {
@@ -22,6 +24,7 @@ LinkedList nil() {
     LinkedListSt* xs = new LinkedListSt;
     xs->cantidad = 0;
     xs->primero = nullptr;
+    xs->ultimo = nullptr;
     return xs;
 }
 
@@ -45,6 +48,7 @@ void Cons(int x, LinkedList xs){
     n->elem = x; 
     n->siguiente = xs->primero;
     xs->primero = n;
+    if (xs->ultimo == nullptr) { xs->ultimo = n; }
     xs->cantidad++;
 }
 
@@ -64,22 +68,41 @@ int length(LinkedList xs) {
 
 //Agrega un elemento al final de la lista.
 //Eficiencia: O(n) donde n son los elementos de la lista
+// void Snoc(int x, LinkedList xs) {
+//     NodoL* nodo = new NodoL;
+//     nodo->elem = x;
+//     nodo->siguiente = nullptr;
+//     if (xs->primero == nullptr) {
+//         xs->primero = nodo;
+//     } else {
+//         NodoL* temp = xs->primero;
+//         while (temp->siguiente != nullptr) {
+//             temp = temp->siguiente;
+//         }
+//         temp->siguiente = nodo;
+//     }
+//     xs->cantidad++;
+// }
+
 void Snoc(int x, LinkedList xs) {
-    NodoL* node = new NodoL;
-    node->elem = x;
-    node->siguiente = nullptr;
-    if (xs->primero == nullptr) {
-        xs->primero = node;
-    } else {
-        NodoL* temp = xs->primero;
-        while (temp->siguiente != nullptr) {
-            temp = temp->siguiente;
-        }
-        temp->siguiente = node;
-        delete temp;
-    }
+    NodoL* n = new NodoL;
+    n->elem = x;
+    n->siguiente = nullptr;
+    if (xs->ultimo == nullptr) {xs->primero = n;          }
+    else                       {xs->ultimo->siguiente = n;}
+    xs->ultimo = n;
     xs->cantidad++;
 }
+
+//Agrega todos los elementos de la segunda lista al final de los de la primera.
+//La segunda lista se destruye.
+void Append(LinkedList xs, LinkedList ys) {
+    xs->ultimo->siguiente = ys->primero;
+    xs->ultimo = ys->ultimo;
+    xs->cantidad += ys->cantidad;
+    delete ys;
+}
+
 
 //Apunta el recorrido al primer elemento.
 ListIterator getIterator(LinkedList xs) {
@@ -120,8 +143,9 @@ void DestroyL(LinkedList xs) {
         delete xs;
     } else {
         NodoL* tempSiguiente = xs->primero;
+        NodoL* tempABorrar;
         while (tempSiguiente->siguiente != nullptr) {
-            NodoL* tempABorrar = tempSiguiente;
+            tempABorrar = tempSiguiente;
             tempSiguiente = tempABorrar->siguiente;
             delete tempABorrar;
         }
@@ -130,24 +154,4 @@ void DestroyL(LinkedList xs) {
     }
 }
 
-/*
-//Libera la memoria ocupada por la lista. Utiliza Iterador
-void DestroyLConIterador(LinkedList xs) {
-    if(xs->primero == nullptrptr) {
-        delete xs;
-    } else {
-        ListIterator tempABorrar = getIterator(xs);
-        ListIterator tempSiguiente;
-        while (not atEnd(tempABorrar)) {
-            tempSiguiente = next(getIterator(xs));
-            delete tempABorrar->current;
-            tempABorrar = tempSiguiente;
-        }
-        delete tempABorrar->current;
-        DisposeIterator();
-        DisposeIterator();
-        delete xs;
-    }   
-}
-*/
 

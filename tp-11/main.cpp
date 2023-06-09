@@ -1,4 +1,5 @@
 #include "LinkedList.h"
+#include "Set.h"
 #include <iostream>
 using namespace std;
 
@@ -36,6 +37,7 @@ bool pertenece(int x, LinkedList xs) {
         pertenece = current(ixs) == x;
         Next(ixs);
     } 
+    DisposeIterator(ixs);
     return pertenece;
 }
 
@@ -47,7 +49,43 @@ int apariciones(int x, LinkedList xs) {
         apariciones += (current(ixs) == x) ? 1 : 0;
         Next(ixs);
     }
+    DisposeIterator(ixs);
     return apariciones;
+}
+
+int minimo(LinkedList xs) {
+    ListIterator ixs = getIterator(xs);
+    int min = current(ixs);
+    Next(ixs); 
+    while (!atEnd(ixs)) {
+        min = ( current(ixs) < min) ? current(ixs) : min;
+        Next(ixs); 
+    }
+    DisposeIterator(ixs);
+    return min;
+}
+
+LinkedList copy(LinkedList xs) {
+    LinkedList newList = nil();
+    ListIterator ixs = getIterator(xs);
+    while(!atEnd(ixs)) {
+        Snoc(current(ixs), newList);
+        Next(ixs);
+    }
+    DisposeIterator(ixs);
+    return newList;
+}
+
+void ShowList(LinkedList xs) {
+    ListIterator ixs = getIterator(xs);
+    cout << "[" << current(ixs);
+    Next(ixs);
+    while(!atEnd(ixs)) {
+        cout <<", "<< current(ixs);
+        Next(ixs);
+    }
+    cout << "]" << endl;
+    DisposeIterator(ixs);
 }
 
 
@@ -98,11 +136,19 @@ int aparicionesTI(int e, Tree t) {
 // ====================================================================================================
 
 int main() {
-    LinkedList l = nil();
-    Cons(5,l);
-    Cons(0,l);
-    Cons(5,l);
-    int p = apariciones(5, l);
-    cout << p << endl;
+    Set s = emptyS();
+    cout << "Esta vacio:" << isEmptyS(s) << endl;
+    AddS(1, s);
+    AddS(2, s);
+    AddS(3, s);
+    AddS(3, s);
+    LinkedList l = setToList(s);
+    ShowList(l);
+    cout << "Pertenece el 5: " << belongsS(5, s) << endl;
+    RemoveS(2, s);
+    cout << "El tamanio es: " << sizeS(s) << endl;
+    l = setToList(s);
+    ShowList(l);
+    DestroyS(s);
 }
 

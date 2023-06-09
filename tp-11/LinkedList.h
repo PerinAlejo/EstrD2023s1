@@ -27,6 +27,10 @@ int length(LinkedList xs);
 //Agrega un elemento al final de la lista.
 void Snoc(int x, LinkedList xs);
 
+//Agrega todos los elementos de la segunda lista al final de los de la primera.
+//La segunda lista se destruye.
+void Append(LinkedList xs, LinkedList ys);
+
 //Apunta el recorrido al primer elemento.
 ListIterator getIterator(LinkedList xs);
 
