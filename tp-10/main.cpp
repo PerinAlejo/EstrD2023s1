@@ -1,7 +1,7 @@
 #include "Persona.h"
 #include "Pokemon.h"
 #include "Entrenador.h"
-#include "ArrayLists.h"
+#include "ArrayList.h"
 #include <iostream>
 using namespace std;
 /*
@@ -51,14 +51,30 @@ int apariciones(int x, ArrayList xs) {
 
 //Crea una nueva lista a partir de la primera y la segunda (en ese orden).
 ArrayList append(ArrayList xs, ArrayList ys){
-    resize(lengthAL(ys), xs);
-    for (int  i = 1; i <= lengthAL(ys); i++ ){
+    if (lengthAL(xs) + lengthAL(ys) > capacidad(xs))  {
+        resize(lengthAL(xs) + lengthAL(ys), xs);
+    }
+
+    for (int i = 1; i <= lengthAL(ys); i++ ){
         add(get(i,ys), xs);
-    } 
+    }
+    return xs; 
+}
+
+void ShowArrayList(ArrayList xs) {
+    cout <<"[";
+    cout << get(1, xs);
+    for (int i = 2; i <= lengthAL(xs); i++ ){
+        cout << ", " << get(i, xs);
+    }
+    cout << "]" << endl; 
 }
 
 int main() {
-
+    ArrayList xs = newArrayList();
+    add(1, xs);
+    add(2, xs);
+    add(3, xs);
 }
 
 

@@ -54,7 +54,7 @@ void add(int x, ArrayList xs){
     xs->cantidad++;
 }
 
-int capacidad(ArrayList xs){
+int capacidad(ArrayList xs) {
     return xs->capacidad;
 }
 
