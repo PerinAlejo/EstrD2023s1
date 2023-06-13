@@ -28,7 +28,7 @@ typedef BBNode* BiBST;
 
 //Devuelve el cuadrante en donde buscar o insertar un nodo.
 //Prec: Se debe cumplir que (x != nodo->kx || y != nodo->yx)
-cuadrante cuandranteCorrespondiente(BBNode* nodo, int x, int y) {
+Cuadrante cuandranteCorrespondiente(BBNode* nodo, int x, int y) {
     if (x > nodo->kx && y > nodo->ky) {
       return NE;
     } else if (x > nodo->kx && y <= nodo->ky) {
@@ -43,7 +43,7 @@ cuadrante cuandranteCorrespondiente(BBNode* nodo, int x, int y) {
 //devuelve el nodo del árbol que posee las claves dadas, o NULL si no existe tal nodo.
 BBNode* findBBNode(BBNode* nodo, int x, int y) { 
   if (nodo != EMPTYBB) {
-    if (x != nodo->kx || y != nodo->yx) {
+    if (x != nodo->kx || y != nodo->ky) {
       return findBBNode(nodo->hijo[cuandranteCorrespondiente(nodo, x, y)], x, y);
     } else {
       return nodo;
@@ -55,23 +55,30 @@ BBNode* findBBNode(BBNode* nodo, int x, int y) {
 
 //devuelve el nodo del árbol con las claves dadas, si el nodo no existe, lo crea y lo inserta 
 //adecuadamente en el árbol.
-BBNode* insertBBNode(BBNode* nodo, int x, int y) { 
-  if (nodo == EMPTYBB) {
-    BBNode* nuevoNodo = new BBNode;
-    nuevoNodo->kx = x;
-    nuevoNodo->ky = y;
-    nuevoNodo->bolitas = { 0, 0, 0, 0 };
-    nuevoNodo->hijo = {NULL, NULL, NULL, NULL};
-    nodo->hijo[cuandranteCorrespondiente(nodo, x, y)] = nuevoNodo;
-    return nuevoNodo;
+BBNode* insertBBNode(BBNode* nodo, int x, int y) {
+  if(nodo == EMPTYBB) {
+      BBNode* nuevoNodo = new BBNode;
+      nuevoNodo->kx = x;
+      nuevoNodo->ky = y;
+      nodo = nuevoNodo;
+      return nodo;
   } else {
-    if (x != nodo->kx || y != nodo->yx) {
-      return findBBNode(nodo->hijo[cuandranteCorrespondiente(nodo, x, y)], x, y);
+    if (x != nodo->kx || y != nodo->ky) {
+      if (nodo->hijo[cuandranteCorrespondiente(nodo, x, y)] == EMPTYBB) {
+        BBNode* nuevoNodo = new BBNode;
+        nuevoNodo->kx = x;
+        nuevoNodo->ky = y;
+        nodo->hijo[cuandranteCorrespondiente(nodo, x, y)] = nuevoNodo;
+        return nuevoNodo;
+      } else {
+        return findBBNode(nodo->hijo[cuandranteCorrespondiente(nodo, x, y)], x, y);
+      }
     } else {
       return nodo;
-    }
-  }
+    }  
+  } 
 }
+
 
 void LiberarBiBST(BiBST t) {
   for (int i = 0; i <= 3; i++) {
@@ -106,6 +113,3 @@ void PrintBB(BiBST t) {
   PrintBBNode(t, 0);
 }
 
-int main() {
-  PrintBBNode()
-}
