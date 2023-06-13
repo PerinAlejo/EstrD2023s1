@@ -65,4 +65,5 @@ Test nroBolitas(Rojo) ( 0,0) - Rojo: 3 (debe ser `Rojo: 3`)
 Test nroBolitas(Azul) ( 0,0) - Azul: 1 (debe ser `Azul: 1`)
 Test nroBolitas(Azul) (-5,0) - Azul: 2 (debe ser `Azul: 2`)
 */
-     
+
+

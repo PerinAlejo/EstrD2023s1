@@ -3,27 +3,84 @@
 #include "BiBST.h"
 using namespace std;
 
+struct BBNode {
+  int kx;                                     // Primera clave
+  int ky;                                     // Segunda clave 
+  int bolitas[4]  = { 0, 0, 0, 0 };           // Las 4 cantidades de bolitas de la celda (array indexado por Color)
+  BBNode* hijo[4] = {NULL, NULL, NULL, NULL}; // Los 4 hijos (array indexado por Cuadrante)
+};
+
+typedef BBNode* BiBST;
 
 //==========================================================================
 // Invariante de representación
 //==========================================================================
 /* INV.REP.
-   * COMPLETAR
+   - int bolitas debe tener numeros positivos.
+
+   NOTAS.
+   - AZUL NEGRO ROJO VERDE. Posiciones de los colores.
 */
 
 //==========================================================================
 // Implementación
 //==========================================================================
+
+//Devuelve el cuadrante en donde buscar o insertar un nodo.
+//Prec: Se debe cumplir que (x != nodo->kx || y != nodo->yx)
+cuadrante cuandranteCorrespondiente(BBNode* nodo, int x, int y) {
+    if (x > nodo->kx && y > nodo->ky) {
+      return NE;
+    } else if (x > nodo->kx && y <= nodo->ky) {
+      return SE;
+    } else if (x <= nodo->kx && y > nodo->ky) {
+      return NO;
+    } else if (x <= nodo->kx && y <= nodo->ky) {
+      return SO;
+    }
+}
+
+//devuelve el nodo del árbol que posee las claves dadas, o NULL si no existe tal nodo.
 BBNode* findBBNode(BBNode* nodo, int x, int y) { 
-  return NULL; // REEMPLAZAR
+  if (nodo != EMPTYBB) {
+    if (x != nodo->kx || y != nodo->yx) {
+      return findBBNode(nodo->hijo[cuandranteCorrespondiente(nodo, x, y)], x, y);
+    } else {
+      return nodo;
+    }
+  } else {
+    return NULL;
+  } 
 }
 
+//devuelve el nodo del árbol con las claves dadas, si el nodo no existe, lo crea y lo inserta 
+//adecuadamente en el árbol.
 BBNode* insertBBNode(BBNode* nodo, int x, int y) { 
-  return NULL; // REEMPLAZAR
+  if (nodo == EMPTYBB) {
+    BBNode* nuevoNodo = new BBNode;
+    nuevoNodo->kx = x;
+    nuevoNodo->ky = y;
+    nuevoNodo->bolitas = { 0, 0, 0, 0 };
+    nuevoNodo->hijo = {NULL, NULL, NULL, NULL};
+    nodo->hijo[cuandranteCorrespondiente(nodo, x, y)] = nuevoNodo;
+    return nuevoNodo;
+  } else {
+    if (x != nodo->kx || y != nodo->yx) {
+      return findBBNode(nodo->hijo[cuandranteCorrespondiente(nodo, x, y)], x, y);
+    } else {
+      return nodo;
+    }
+  }
 }
 
-void LiberarBiBST(BiBST t) { 
-  // COMPLETAR
+void LiberarBiBST(BiBST t) {
+  for (int i = 0; i <= 3; i++) {
+    if (t->hijo[i] != EMPTYBB) {
+      LiberarBiBST(t->hijo[i]);
+    }
+  }
+  delete t->hijo;
+  delete t;
 }
 
 //==========================================================================
@@ -49,3 +106,6 @@ void PrintBB(BiBST t) {
   PrintBBNode(t, 0);
 }
 
+int main() {
+  PrintBBNode()
+}
