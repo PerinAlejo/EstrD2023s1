@@ -3,15 +3,6 @@
 #include "BiBST.h"
 using namespace std;
 
-struct BBNode {
-  int kx;                                     // Primera clave
-  int ky;                                     // Segunda clave 
-  int bolitas[4]  = { 0, 0, 0, 0 };           // Las 4 cantidades de bolitas de la celda (array indexado por Color)
-  BBNode* hijo[4] = {NULL, NULL, NULL, NULL}; // Los 4 hijos (array indexado por Cuadrante)
-};
-
-typedef BBNode* BiBST;
-
 //==========================================================================
 // Invariante de representación
 //==========================================================================
@@ -71,14 +62,13 @@ BBNode* insertBBNode(BBNode* nodo, int x, int y) {
         nodo->hijo[cuandranteCorrespondiente(nodo, x, y)] = nuevoNodo;
         return nuevoNodo;
       } else {
-        return findBBNode(nodo->hijo[cuandranteCorrespondiente(nodo, x, y)], x, y);
+        return insertBBNode(nodo->hijo[cuandranteCorrespondiente(nodo, x, y)], x, y);
       }
     } else {
       return nodo;
     }  
   } 
 }
-
 
 void LiberarBiBST(BiBST t) {
   for (int i = 0; i <= 3; i++) {
