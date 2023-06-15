@@ -2,31 +2,71 @@
 using namespace std;
 #include <iomanip>
 #include "TiposBasicos.h"
-#include "BiBST.h"
 #include "TableroInfinito.h"
 
 
 int main(){
-  BiBST bb = EMPTYBB;
-  bb = insertBBNode(bb, 5, 6);
-  BiBST bbAgregado = insertBBNode(bb, 4, 2);
-  bbAgregado = insertBBNode(bb, 12, 5);
-  bbAgregado = insertBBNode(bb, 12, 12);
-  bbAgregado = insertBBNode(bb, 4, 12);
-  bbAgregado = insertBBNode(bb, 13, 13);
-  bbAgregado = insertBBNode(bb, 6, 3);
-  bbAgregado = insertBBNode(bb, 11, 20);
-  bbAgregado = insertBBNode(bb, 8, 6);
-  bbAgregado = insertBBNode(bb, 9, 12);
-  bbAgregado = insertBBNode(bb, 22, 0);
-  bbAgregado = insertBBNode(bb, 22, 7);
-  bbAgregado = insertBBNode(bb, 22, 6);
-
-  BiBST bbBuscado = findBBNode(bb, 100, 12);
-  PrintBB(bbBuscado);
+  TableroInfinito t = TInfInicial();
+  PonerNTInf(t, ROJO,  1);  PrintRepTInf(t);
+  PonerNTInf(t, AZUL,  1);
+  MoverNTInf(t, OESTE, 1);
+  PonerNTInf(t, VERDE, 1);  PrintRepTInf(t);
+  MoverNTInf(t, OESTE, 4);
+  PonerNTInf(t, ROJO,  1);
+  PonerNTInf(t, AZUL,  2);  PrintRepTInf(t);
+  MoverNTInf(t, ESTE,  5);
+  PonerNTInf(t, ROJO,  2);  PrintRepTInf(t);
+  int r = nroBolitasTInf(t, ROJO);
+  int b = nroBolitasTInf(t, AZUL);
+  MoverNTInf(t, ESTE,  1);
+  MoverNTInf(t, NORTE, 1);
+  PonerNTInf(t, NEGRO, 1);  PrintRepTInf(t);
+  MoverNTInf(t, SUR,   1);
+  MoverNTInf(t, OESTE, 6);
+  int b2 = nroBolitasTInf(t, AZUL); 
+  
+  cout << "Test nroBolitas(Rojo) ( 0,0) - "; PRINTCOLORN(ROJO, r);  cout << " (debe ser `Rojo: 3`)" << endl;
+  cout << "Test nroBolitas(Azul) ( 0,0) - "; PRINTCOLORN(AZUL, b);  cout << " (debe ser `Azul: 1`)" << endl;
+  cout << "Test nroBolitas(Azul) (-5,0) - "; PRINTCOLORN(AZUL, b2); cout << " (debe ser `Azul: 2`)" << endl;
 }
 
-/* La salida de este programa debe ser la siguiente:
+
+//==========================================================================
+// Prueba de TableroInfinito
+//==========================================================================
+
+/*
+  TableroInfinito t = TInfInicial();
+  PonerNTInf(t, ROJO,  1);  PrintRepTInf(t);
+  PonerNTInf(t, AZUL,  1);
+  MoverNTInf(t, OESTE, 1);
+  PonerNTInf(t, VERDE, 1);  PrintRepTInf(t);
+  MoverNTInf(t, OESTE, 4);
+  PonerNTInf(t, ROJO,  1);
+  PonerNTInf(t, AZUL,  2);  PrintRepTInf(t);
+  MoverNTInf(t, ESTE,  5);
+  PonerNTInf(t, ROJO,  2);  PrintRepTInf(t);
+  int r = nroBolitasTInf(t, ROJO);
+  int b = nroBolitasTInf(t, AZUL);
+  MoverNTInf(t, ESTE,  1);
+  MoverNTInf(t, NORTE, 1);
+  PonerNTInf(t, NEGRO, 1);  PrintRepTInf(t);
+  MoverNTInf(t, SUR,   1);
+  MoverNTInf(t, OESTE, 6);
+  int b2 = nroBolitasTInf(t, AZUL); 
+  
+  cout << "Test nroBolitas(Rojo) ( 0,0) - "; PRINTCOLORN(ROJO, r);  cout << " (debe ser `Rojo: 3`)" << endl;
+  cout << "Test nroBolitas(Azul) ( 0,0) - "; PRINTCOLORN(AZUL, b);  cout << " (debe ser `Azul: 1`)" << endl;
+  cout << "Test nroBolitas(Azul) (-5,0) - "; PRINTCOLORN(AZUL, b2); cout << " (debe ser `Azul: 2`)" << endl;
+
+  LiberarTInf(t);
+  */
+
+//==========================================================================
+// Esquema de prueba de TableroInfinito
+//==========================================================================
+
+ /* La salida de este programa debe ser la siguiente:
 
 Celda actual: (0, 0)
 BiBST:
@@ -62,28 +102,26 @@ Test nroBolitas(Azul) (-5,0) - Azul: 2 (debe ser `Azul: 2`)
 */
 
 
-/*TableroInfinito t = TInfInicial();
-  PonerNTInf(t, ROJO,  1);  PrintRepTInf(t);
-  PonerNTInf(t, AZUL,  1);
-  MoverNTInf(t, OESTE, 1);
-  PonerNTInf(t, VERDE, 1);  PrintRepTInf(t);
-  MoverNTInf(t, OESTE, 4);
-  PonerNTInf(t, ROJO,  1);
-  PonerNTInf(t, AZUL,  2);  PrintRepTInf(t);
-  MoverNTInf(t, ESTE,  5);
-  PonerNTInf(t, ROJO,  2);  PrintRepTInf(t);
-  int r = nroBolitasTInf(t, ROJO);
-  int b = nroBolitasTInf(t, AZUL);
-  MoverNTInf(t, ESTE,  1);
-  MoverNTInf(t, NORTE, 1);
-  PonerNTInf(t, NEGRO, 1);  PrintRepTInf(t);
-  MoverNTInf(t, SUR,   1);
-  MoverNTInf(t, OESTE, 6);
-  int b2 = nroBolitasTInf(t, AZUL); 
-  
-  cout << "Test nroBolitas(Rojo) ( 0,0) - "; PRINTCOLORN(ROJO, r);  cout << " (debe ser `Rojo: 3`)" << endl;
-  cout << "Test nroBolitas(Azul) ( 0,0) - "; PRINTCOLORN(AZUL, b);  cout << " (debe ser `Azul: 1`)" << endl;
-  cout << "Test nroBolitas(Azul) (-5,0) - "; PRINTCOLORN(AZUL, b2); cout << " (debe ser `Azul: 2`)" << endl;
+//==========================================================================
+// Prueba de Arboles
+//==========================================================================
 
-  LiberarTInf(t);*/
+/*
+  BiBST bb = EMPTYBB;
+  bb = insertBBNode(bb, 5, 6);
+  BiBST bbAgregado = insertBBNode(bb, 4, 2);
+  bbAgregado = insertBBNode(bb, 12, 5);
+  bbAgregado = insertBBNode(bb, 12, 12);
+  bbAgregado = insertBBNode(bb, 4, 12);
+  bbAgregado = insertBBNode(bb, 13, 13);
+  bbAgregado = insertBBNode(bb, 6, 3);
+  bbAgregado = insertBBNode(bb, 11, 20);
+  bbAgregado = insertBBNode(bb, 8, 6);
+  bbAgregado = insertBBNode(bb, 9, 12);
+  bbAgregado = insertBBNode(bb, 22, 0);
+  bbAgregado = insertBBNode(bb, 22, 7);
+  bbAgregado = insertBBNode(bb, 22, 6);
 
+  BiBST bbBuscado = findBBNode(bb, 100, 12);
+  PrintBB(bbBuscado);
+*/

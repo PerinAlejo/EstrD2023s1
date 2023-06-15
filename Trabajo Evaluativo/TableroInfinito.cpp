@@ -50,7 +50,6 @@ void SacarNTInf(TableroInfinito t, Color color, int n){
 }
 
 //--------------------------------------------------------------------------
-// *Preguntar si hace falta crear celdas intermedias.
 // PROP: Modifica el tablero dado para mover n posiciones en la dirección dada a la celda actual
 // PRECOND: la dirección dada es válida
 void MoverNTInf(TableroInfinito t, Dir dir, int n){
@@ -84,13 +83,15 @@ int nroBolitasTInf(TableroInfinito t, Color color) {
 //--------------------------------------------------------------------------
 // PROP: Libera toda la memoria del tablero dado.
 void LiberarTInf(TableroInfinito t){
-  // COMPLETAR
+  LiberarBiBST(t->tablero);
+  delete t;
 }
 
 //==========================================================================
 // Impresión para verificaciones
 //==========================================================================
 void PrintRepTInf(TableroInfinito t) {
-  // COMPLETAR 
-  // PISTA: utilizar PrintBB de BiBST
+  cout << "Celda actual: (" << t->celdaActual->kx << ", " << t->celdaActual->ky << ")" << endl;  
+  PrintBB(t->tablero);
+  cout << endl;
 }
