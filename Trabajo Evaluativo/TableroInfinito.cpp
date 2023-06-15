@@ -81,7 +81,6 @@ int nroBolitasTInf(TableroInfinito t, Color color) {
   return t->celdaActual->bolitas[color];
 }
 
-
 //--------------------------------------------------------------------------
 // PROP: Libera toda la memoria del tablero dado.
 void LiberarTInf(TableroInfinito t){
