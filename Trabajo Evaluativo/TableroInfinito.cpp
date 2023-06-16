@@ -10,12 +10,14 @@ using namespace std;
 // Implementación de TableroInfinito
 //==========================================================================
 struct TableroInfinitoHeader {
-  BiBST tablero;
-  BiBST celdaActual;
+  BiBST tablero; //Tablero
+  int ax;         //Coordenada x de la celda actual
+  int ay;         //Coordenada y de la celda actual
 }; 
 /* INV.REP.:
-    - celdaActual debe ser un descendiente de tablero.
-    
+    - ax representa el kx del nodo con el que se quiere interactuar.(Siendo kx la primera clave del nodo del tablero)
+    - ay representa el ky del nodo con el que se quiere interactuar.(Siendo ky la segunda clave del nodo del tablero)
+    - El tablero debe iniciarse en la celda (0,0).
 */
 
 //--------------------------------------------------------------------------
@@ -24,7 +26,8 @@ struct TableroInfinitoHeader {
 TableroInfinito TInfInicial(){
   TableroInfinito t = new TableroInfinitoHeader;
   t->tablero = insertBBNode(EMPTYBB, 0, 0);
-  t->celdaActual = t->tablero;
+  t->ax = 0;
+  t->ay = 0;
   return t; // REEMPLAZAR
 }
 
@@ -33,7 +36,8 @@ TableroInfinito TInfInicial(){
 // PRECOND: el color es válido
 void PonerNTInf(TableroInfinito t, Color color, int n){
     if (n >=0) {
-      t->celdaActual->bolitas[color] += n;
+      BiBST celdaActual = insertBBNode(t->tablero, t->ax, t->ay);
+      celdaActual->bolitas[color] += n;
     } else {
       BOOM("No se puede poner una cantidad negativa de bolitas");
     }    
@@ -46,8 +50,9 @@ void PonerNTInf(TableroInfinito t, Color color, int n){
 //   el color es válido
 //   hay al menos n bolitas en la celda actual en t
 void SacarNTInf(TableroInfinito t, Color color, int n){
-  if (t->celdaActual->bolitas[color] >= n) {
-    t->celdaActual->bolitas[color] -= n;
+  BiBST celdaActual = findBBNode(t->tablero, t->ax, t->ay);
+  if (celdaActual != NULL && celdaActual->bolitas[color] >= n ) {
+    celdaActual->bolitas[color] -= n;
   } else {
     BOOM("No hay suficientes bolitas");
   }
@@ -60,16 +65,16 @@ void MoverNTInf(TableroInfinito t, Dir dir, int n){
   switch (dir)
   {
   case NORTE:
-    t->celdaActual = insertBBNode(t->tablero, t->celdaActual->kx, t->celdaActual->ky + n);
+    t->ay += n; 
     break;
   case SUR:
-    t->celdaActual = insertBBNode(t->tablero, t->celdaActual->kx, t->celdaActual->ky - n);
+    t->ay -= n;
     break;
   case ESTE:
-    t->celdaActual = insertBBNode(t->tablero, t->celdaActual->kx + n, t->celdaActual->ky);
+    t->ax += n;
     break;
   case OESTE:
-    t->celdaActual = insertBBNode(t->tablero, t->celdaActual->kx - n, t->celdaActual->ky);
+    t->ax -= n;
     break;
   default:
     cerr << "ERROR: " << dir << " no es una representación de una dirección válida";
@@ -81,7 +86,13 @@ void MoverNTInf(TableroInfinito t, Dir dir, int n){
 // PROP:retorna el número de bolitas de ese color en la celda actual del tablero dado
 // PRECOND: el color es válido
 int nroBolitasTInf(TableroInfinito t, Color color) {
-  return t->celdaActual->bolitas[color];
+  BiBST celdaActual = findBBNode(t->tablero, t->ax, t->ay);
+  if (celdaActual == NULL) {
+    return 0;
+  } else {
+    return celdaActual->bolitas[color];
+  }
+  
 }
 
 //--------------------------------------------------------------------------
@@ -95,7 +106,7 @@ void LiberarTInf(TableroInfinito t){
 // Impresión para verificaciones
 //==========================================================================
 void PrintRepTInf(TableroInfinito t) {
-  cout << "Celda actual: (" << t->celdaActual->kx << ", " << t->celdaActual->ky << ")" << endl;  
+  cout << "Celda actual: (" << t->ax << ", " << t->ay << ")" << endl;  
   PrintBB(t->tablero);
   cout << endl;
 }
