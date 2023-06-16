@@ -12,10 +12,10 @@ using namespace std;
 struct TableroInfinitoHeader {
   BiBST tablero;
   BiBST celdaActual;
-  // COMPLETAR
 }; 
 /* INV.REP.:
-  * COMPLETAR
+    - celdaActual debe ser un descendiente de tablero.
+    
 */
 
 //--------------------------------------------------------------------------
@@ -32,7 +32,11 @@ TableroInfinito TInfInicial(){
 //PROP: Modifica el tablero dado para agregar n bolitas del color dado a la celda actual del tablero
 // PRECOND: el color es válido
 void PonerNTInf(TableroInfinito t, Color color, int n){
-    t->celdaActual->bolitas[color] += n;
+    if (n >=0) {
+      t->celdaActual->bolitas[color] += n;
+    } else {
+      BOOM("No se puede poner una cantidad negativa de bolitas");
+    }    
 }
 
 //--------------------------------------------------------------------------

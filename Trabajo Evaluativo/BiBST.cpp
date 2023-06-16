@@ -7,10 +7,17 @@ using namespace std;
 // Invariante de representación
 //==========================================================================
 /* INV.REP.
-   - int bolitas debe tener numeros positivos.
+   - Los elementos de bolitas deben ser numeros positivos.
+   - Los decendientes del BBNode deben cumplir con las siguientes condiciones:
+      Para el cuadrante NE x > kx && y > ky;
+      Para el cuadrante SE x > kx && y <= ky;
+      Para el cuadrante NO x <= kx && y > ky;
+      Para el cuadrante SO x <= kx && y <= ky;
+    donde x es el kx e y es el ky de los decendientes del arbol.
 
    NOTAS.
    - AZUL NEGRO ROJO VERDE. Posiciones de los colores.
+   - NE    SE    NO   SO.   Posiciones de los cuadrantes.
 */
 
 //==========================================================================
@@ -44,23 +51,24 @@ BBNode* findBBNode(BBNode* nodo, int x, int y) {
   } 
 }
 
+BBNode* crearNuevoNodo (int x, int y) {
+  BBNode* nuevoNodo = new BBNode;
+  nuevoNodo->kx = x;
+  nuevoNodo->ky = y;
+  return nuevoNodo;
+}
+
 //devuelve el nodo del árbol con las claves dadas, si el nodo no existe, lo crea y lo inserta 
 //adecuadamente en el árbol.
 BBNode* insertBBNode(BBNode* nodo, int x, int y) {
   if(nodo == EMPTYBB) {
-      BBNode* nuevoNodo = new BBNode;
-      nuevoNodo->kx = x;
-      nuevoNodo->ky = y;
-      nodo = nuevoNodo;
+      nodo = crearNuevoNodo(x,y);
       return nodo;
   } else {
     if (x != nodo->kx || y != nodo->ky) {
       if (nodo->hijo[cuandranteCorrespondiente(nodo, x, y)] == EMPTYBB) {
-        BBNode* nuevoNodo = new BBNode;
-        nuevoNodo->kx = x;
-        nuevoNodo->ky = y;
-        nodo->hijo[cuandranteCorrespondiente(nodo, x, y)] = nuevoNodo;
-        return nuevoNodo;
+        nodo->hijo[cuandranteCorrespondiente(nodo, x, y)] = crearNuevoNodo(x,y);
+        return nodo->hijo[cuandranteCorrespondiente(nodo, x, y)];
       } else {
         return insertBBNode(nodo->hijo[cuandranteCorrespondiente(nodo, x, y)], x, y);
       }
@@ -76,7 +84,6 @@ void LiberarBiBST(BiBST t) {
       LiberarBiBST(t->hijo[i]);
     }
   }
-  delete t->hijo;
   delete t;
 }
 
