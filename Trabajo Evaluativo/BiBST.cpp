@@ -7,13 +7,15 @@ using namespace std;
 // Invariante de representación
 //==========================================================================
 /* INV.REP.
-   - Los elementos de bolitas deben ser numeros positivos.
+   - Los elementos de bolitas deben ser >= 0.
    - Los decendientes del BBNode deben cumplir con las siguientes condiciones:
       Para el cuadrante NE x > kx && y > ky;
       Para el cuadrante SE x > kx && y <= ky;
       Para el cuadrante NO x <= kx && y > ky;
       Para el cuadrante SO x <= kx && y <= ky;
     donde x es el kx e y es el ky de los decendientes del arbol.
+    - El arbol no puede tener nodos con claves repetidas.
+    - Cada BBNode debe cumplir con las invariantes de BiBST.
 
    NOTAS.
    - AZUL NEGRO ROJO VERDE. Posiciones de los colores.

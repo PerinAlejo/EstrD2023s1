@@ -15,8 +15,6 @@ struct TableroInfinitoHeader {
   int ay;         //Coordenada y de la celda actual
 }; 
 /* INV.REP.:
-    - ax representa el kx del nodo con el que se quiere interactuar.(Siendo kx la primera clave del nodo del tablero)
-    - ay representa el ky del nodo con el que se quiere interactuar.(Siendo ky la segunda clave del nodo del tablero)
     - El tablero debe iniciarse en la celda (0,0).
 */
 
@@ -25,7 +23,7 @@ struct TableroInfinitoHeader {
 //la posición (0,0)
 TableroInfinito TInfInicial(){
   TableroInfinito t = new TableroInfinitoHeader;
-  t->tablero = insertBBNode(EMPTYBB, 0, 0);
+  t->tablero = EMPTYBB;
   t->ax = 0;
   t->ay = 0;
   return t; // REEMPLAZAR
@@ -98,7 +96,9 @@ int nroBolitasTInf(TableroInfinito t, Color color) {
 //--------------------------------------------------------------------------
 // PROP: Libera toda la memoria del tablero dado.
 void LiberarTInf(TableroInfinito t){
-  LiberarBiBST(t->tablero);
+  if (t->tablero != EMPTYBB) {
+    LiberarBiBST(t->tablero);
+  }
   delete t;
 }
 
